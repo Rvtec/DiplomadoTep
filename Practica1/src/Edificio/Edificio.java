@@ -7,8 +7,21 @@ package Edificio;
 
 /**
  *
- * @author rvargas
+ * @author Owner
  */
 public class Edificio {
-    
+ int numPisos;
+ String nombre;
+ int numPuerta;
+         
+    public Edificio(int numPisos, String nombre, int numPuerta){
+           this.numPisos=numPisos;
+           this.nombre=nombre;
+           this.numPuerta=numPuerta;
+}
+    public void SetEdificio(int numPisos, String nombre, int numPuerta){
+           this.numPisos=numPisos;
+           this.nombre=nombre;
+           this.numPuerta=numPuerta;
+    }
 }
