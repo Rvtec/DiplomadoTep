@@ -5,17 +5,50 @@
  */
 package RadioFM;
 
+
+import java.util.Scanner;
+
+
+
 /**
  *
  * @author Owner
  */
 public class Radio {
     
+    
     public static void main (String [] args){
         
-        ControlRadio radio1 = new ControlRadio();
+        int opcion=0;
         
-        radio1.up();
-        System.out.println(radio1.frecuencia);
+        ControlRadio radio1= new ControlRadio();
+        Scanner sc = new Scanner(System.in);
+        
+        while(opcion!=3){
+            System.out.println();
+            System.out.println("Frecuencia actual: "+radio1.frecuencia);
+            System.out.println("Presione:");
+            System.out.println("1- Para aumentar frecuencia");
+            System.out.println("2- Para bajar frecuencia");
+            System.out.println("3- Para salir");
+            opcion = sc.nextInt();
+            if (opcion==1){
+                
+                radio1.up();
+            }
+            else{
+            radio1.down();
+            }
+            
+            
+        }
+        
+        
+        
+         
+   
+     
     }
+    
+   
 }

@@ -5,16 +5,19 @@
  */
 package RadioFM;
 
+
 /**
  *
  * @author Owner
  */
 public class ControlRadio {
  
-    double frecuencia;
-            
+    double frecuencia=80;
+    
+    
     public ControlRadio(){
 }
+    
     public void up(){
     
         if(frecuencia<108){
@@ -34,4 +37,8 @@ public class ControlRadio {
             frecuencia=108;
         }
     }
+    
+    
 }
+
+   
