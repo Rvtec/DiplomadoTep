@@ -9,6 +9,31 @@ package PruebaReproducible;
  *
  * @author Owner
  */
-public class Video {
+public class Video implements ReproductorMedia   {
+
+    @Override
+    public void reproducir() {
+        System.out.println("Reproducir Video");
+    }
+
+    @Override
+    public void detener() {
+       System.out.println("Detener Video");
+    }
+
+    @Override
+    public void rebobinar() {
+        System.out.println("Rebobinar Video");
+    }
+
+    @Override
+    public void avanzar() {
+        System.out.println("Avanzar Video");
+    }
+
+    @Override
+    public void grabar() {
+     System.out.println("Grabar Video");
+    }
     
 }
