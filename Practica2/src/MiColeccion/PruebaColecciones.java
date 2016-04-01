@@ -34,19 +34,21 @@ public class PruebaColecciones {
     linkList.add(2);
     linkList.add(3);
     
-       // System.out.println(miCol2.size());
+        //System.out.println(miCol2.size());
         
-        //Probando PUSH
-        
-        
+        recorrerLista(miCol2);
+   
     
     }
     
     
     
-    public static void recorrerLista(){
+    public static void recorrerLista(List<java.util.List> lista){
 
+          for(java.util.List li : lista){
           
+              System.out.println(li.getClass().getName());
+          }
         
        }
 }
