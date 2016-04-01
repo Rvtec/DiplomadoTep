@@ -27,16 +27,17 @@ public class PruebaColecciones {
     miCol2.add(new Edificio(5,"Torre",54));
     miCol2.add(new Edificio(6,"Torre",54));
     miCol2.add(new Edificio(7,"Torre",54));
-    listaArr.add("Hola");
+    listaArr.add("Hola");/*
     listaArr.add("Mundo");
     listaArr.add("Java");
-    linkList.add(1);
+    linkList.add(miCol1);
     linkList.add(2);
     linkList.add(3);
+    */
     
-        //System.out.println(miCol2.size());
         
-        recorrerLista(miCol2);
+        
+        recorrerLista(linkList);
    
     
     }
