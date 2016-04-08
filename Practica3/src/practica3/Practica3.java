@@ -40,7 +40,7 @@ public class Practica3 {
         System.out.println("El numero de lineas en la URL digitada es: "+Procesos.contadorDeLineas(url));
         System.out.println("El numero de imagenes en la URL digitada es: "+Procesos.obtenerNumeroImg(url));
         System.out.println("El numero de formularios en la URL digitada es: "+Procesos.obtenerNumeroForm(url));
-        
+        System.out.println("El numero de input en los formularios de la URL digitada es: "+Procesos.obtenerNumeroFormInput(url));
         }
         else if(Procesos.obtenerEstadoConexion(url) != 0){
             System.out.println("El estado de la URL digitada no es OK");

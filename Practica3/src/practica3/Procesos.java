@@ -96,4 +96,12 @@ public class Procesos {
         return form.size();
     }
     
+    public static int obtenerNumeroFormInput (String url) throws IOException{
+    
+        Document formu =  Jsoup.connect(url).get();
+        Elements form= formu.select("form input");
+        
+        return form.size();
+    }
+    
 }
