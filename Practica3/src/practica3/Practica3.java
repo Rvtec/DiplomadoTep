@@ -33,12 +33,21 @@ public class Practica3 {
         url= in.nextLine();
       
         
-        System.out.println(Procesos.obtenerNumeroParr(url));
         
-        System.out.println(Procesos.obtenerEstadoConexion(url));
-        System.out.println(Procesos.contadorDeLineas(url));
-        System.out.println(Procesos.obtenerNumeroImg(url));
+        if(Procesos.obtenerEstadoConexion(url) == 200){
         
+        System.out.println("El numero de <p> en la URL digitada es: "+Procesos.obtenerNumeroParr(url));
+        System.out.println("El numero de lineas en la URL digitada es: "+Procesos.contadorDeLineas(url));
+        System.out.println("El numero de imagenes en la URL digitada es: "+Procesos.obtenerNumeroImg(url));
+        System.out.println("El numero de formularios en la URL digitada es: "+Procesos.obtenerNumeroForm(url));
+        
+        }
+        else if(Procesos.obtenerEstadoConexion(url) != 0){
+            System.out.println("El estado de la URL digitada no es OK");
+        }
+        else{
+            System.out.println("La URL digitada no es valida");
+        }
        
     }
     
