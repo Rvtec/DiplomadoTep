@@ -5,13 +5,18 @@
  */
 package holamundospark;
 
+import freemarker.template.Configuration;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 import spark.Session;
 import static spark.Spark.*;
+import spark.template.freemarker.FreeMarkerEngine;
 
 /**
  *
@@ -23,6 +28,9 @@ public class HolaMundoSpark {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+        //indicando los recursos publicos.
+        staticFileLocation("/publico");
 
         // get("/hello/", (req, res) -> "Hello World");
         get("/basico", new Route() {
@@ -150,6 +158,115 @@ public class HolaMundoSpark {
 
             return String.format("Usted a visitado está pagina %d", contador);
         });
+        /**
+         * Debes estar autenticado. http://localhost:4567/zonaadmin/
+         */
+        get("/zonaadmin/", (request, response) -> "Zona Admin Barcamp 2014");
+        /**
+         * Se ejecuta antes de un request. Podemos modificar las llamada.
+         */
+        before((request, response) -> {
+            System.out.println("Filtro Before -> Realizando llamada a la ruta: " + request.pathInfo());
+        });
+
+        /**
+         * Luego de la ejecución permute interceptar el response...
+         */
+        after((request, response) -> {
+            System.out.println("Filtro After -> Incluyendo Header...");
+            response.header("barcamp", "2016");
+            response.header("otroHeader", "Cualquier Cosa");
+        });
+
+        /**
+         * Se ejecuta antes de un request. Podemos modificar las llamada.
+         */
+        before("/zonaadmin/*", (request, response) -> {
+            Usuario usuario = request.session(true).attribute("usuario");
+            if (usuario == null) {
+                //parada del request, enviando un codigo.
+                halt(401, "No puede acceder a esta ruta sin autenticacion");
+            }
+        });
+
+        /**
+         * Registra elementos en el ambito web de sesion.
+         * http://localhost:4567/autenticar/barcamp/2014
+         */
+        get("/autenticar/:usuario/:contrasena", (request, response) -> {
+            //
+            Session session = request.session(true);
+
+            //
+            Usuario usuario = null;//FakeServices.getInstancia().autenticarUsuario(request.params("usuario"), request.params("contrasena"));
+            if (request.params("usuario").equalsIgnoreCase("barcamp") && request.params("contrasena").equalsIgnoreCase("2014")) {
+                usuario = new Usuario("Barcamp", "2014");
+            }
+
+            if (usuario == null) {
+                halt(401, "Credenciales no validas...");
+            }
+
+            session.attribute("usuario", usuario);
+            response.redirect("/zonaadmin/");
+
+            return "";
+        });
+
+//*********************ENLAZANDO FREEMAKER************************
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
+        configuration.setClassForTemplateLoading(HolaMundoSpark.class, "/Recursos/");
+        FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(configuration);
+
+        get("/entrada", (req, res) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("titulo", "Titulo de la pagina " + new Date());
+
+            return new ModelAndView(attributes, "entrada.ftl");
+        }, freeMarkerEngine);
+
+//***************UTILIZANDO FORMULARIO PARA OBTENER DATOS***********************
+        /**
+         * http://localhost:4567/formulario
+         */
+        get("/formulario/", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("titulo", "Formulario en FreeMarker");
+            return new ModelAndView(attributes, "formulario.ftl");
+        }, freeMarkerEngine);
+
+        post("/procesarFormulario/", (request, response) -> {
+            //obteniendo la matricula.
+
+            int matricula = Integer.parseInt(request.queryParams("matricula"));
+            String nombre = request.queryParams("nombre");
+            String carrera = request.queryParams("carrera");
+
+            Estudiante estudiante = new Estudiante(matricula, nombre, carrera);
+
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("titulo", "Procesando Estudiante");
+            attributes.put("estudiante", estudiante);
+
+            //enviando los parametros a la vista.
+            return new ModelAndView(attributes, "formularioProcesado.ftl");
+        }, freeMarkerEngine); //
+
+        //*************************UTILIZANDO CSS**************************** 
+        /**
+         * http://localhost:4567/datosEstudiante
+         */
+        get("/datosEstudiante/:matricula", (request, response) -> {
+            //obteniendo la matricula.
+            Estudiante estudiante = new Estudiante(Integer.parseInt(request.params("matricula")), "Estudiante", "Carrera");//FakeServices.getInstancia().getEstudianteMatricula(Integer.parseInt(request.params("matricula")));
+
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("estudiante", estudiante);
+
+            //enviando los parametros a la vista.
+            return new ModelAndView(attributes, "datosEstudiante.ftl");
+        }, freeMarkerEngine); //
+
     }
 
     private static Object procesarParametros(Request request, Response response) {
