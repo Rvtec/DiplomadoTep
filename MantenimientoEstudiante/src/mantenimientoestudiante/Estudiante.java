@@ -11,4 +11,16 @@ package mantenimientoestudiante;
  */
 public class Estudiante {
     
+    int matricula;
+    String nombre;
+    String apellido;
+    String telefono;
+    
+    Estudiante(int matricula,String nombre, String apellido,String telefono){
+        this.apellido =apellido;
+        this.matricula = matricula;
+        this.nombre= nombre;
+        this.telefono= telefono;
+    }
+    
 }
