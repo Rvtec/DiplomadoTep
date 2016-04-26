@@ -31,6 +31,12 @@ public class MantenimientoEstudiante {
 
     
 
+        get("/estudiantes", (request, response) -> {
+            Map<String, Object> atributos = new HashMap<>();
+            atributos.put("titulo", "Estudiantes");
+            return new ModelAndView(atributos, "estudiantes.ftl");
+        }, freeMarkerEngine);
+        
         get("/formulario", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
             atributos.put("titulo", "Estudiantes");
