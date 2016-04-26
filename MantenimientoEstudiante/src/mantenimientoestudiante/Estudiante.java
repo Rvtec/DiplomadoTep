@@ -23,4 +23,37 @@ public class Estudiante {
         this.telefono= telefono;
     }
     
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public int getMatricula() {
+        return matricula;
+    }
+
+    public void setCarrera(int matricula) {
+        this.matricula = matricula;
+    }
+
+    public String getTelefono() {
+        return telefono;
+
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+ public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+    
 }

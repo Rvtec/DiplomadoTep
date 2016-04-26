@@ -8,7 +8,7 @@
     <body>
         <h1>Formulario Estudiante</h1>
         <div>
-        <form action="/formulario" method="post">
+        <form action="/estudiantesProcesados" method="post">
             Matricula: <input name="Matricula" type="String"><br/><br/>
             Nombre:  <input name="Nombre" type="String"><br/><br/>
             Apellido: <input name="Apellido" type="String"><br/><br/>

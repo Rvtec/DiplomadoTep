@@ -29,15 +29,15 @@ public class MantenimientoEstudiante {
         configuration.setClassForTemplateLoading(MantenimientoEstudiante.class, "/Recursos/html");
         FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(configuration);
 
-        post("/formulario", (request, response) -> {
-
+        
+       get("/formulario", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
             atributos.put("titulo", "Estudiantes");
-            atributos.put("guardado", "Estudiante guardado con exito");
+            atributos.put("guardado","");
             return new ModelAndView(atributos, "formulario.ftl");
         }, freeMarkerEngine);
         
-        get("/estudiantesProcesados", (request, response) -> {
+        post("/estudiantesProcesados", (request, response) -> {
             int matricula = Integer.parseInt(request.queryParams("Matricula"));
             String nombre = request.queryParams("Nombre");
             String apellido= request.queryParams("Apellido");
@@ -47,13 +47,18 @@ public class MantenimientoEstudiante {
             
             Map<String, Object> atributos = new HashMap<>();
             
-           if (estudiante1!=null){
-           atributos.put("estudiante", estudiante1);
-           }
-            
             atributos.put("titulo", "Estudiantes");
+            atributos.put("estudiante", estudiante1);
+            /*
+              Map<String, Object> attributes = new HashMap<>();
+            attributes.put("titulo", "Procesando Estudiante");
+            attributes.put("estudiante", estudiante);*/
             
-            return new ModelAndView(atributos, "estudiantes.ftl");
+           /* System.out.println(estudiante1.matricula);
+            
+            return new ModelAndView(estudiante1, "");*/
+           
+           return new ModelAndView(atributos, "estudiantesProcesados.ftl");
         }, freeMarkerEngine);
         
 
@@ -63,12 +68,7 @@ public class MantenimientoEstudiante {
             return new ModelAndView(atributos, "estudiantes.ftl");
         }, freeMarkerEngine);
 
-        get("/formulario", (request, response) -> {
-            Map<String, Object> atributos = new HashMap<>();
-            atributos.put("titulo", "Estudiantes");
-            atributos.put("guardado","");
-            return new ModelAndView(atributos, "formulario.ftl");
-        }, freeMarkerEngine);
+        
 
     }
 
