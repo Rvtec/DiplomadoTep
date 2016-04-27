@@ -1,17 +1,13 @@
 div{
     
-    border-style: solid;
-    border-width: 1px;
-    width: 500px;
-    height: 400px;
+    border-color: red;
 }
 
-input {
-  width: 150px;
-  margin-top: 20px; 
-  right: 20px;
-  bottom: 20px;
-  height: 30px;
-  border-radius: 10px;
-  border: 2p solid #999;
+
+
+h1{
+    
+    color: red;
+    font-size: small;
+    font-family: inherit;
 }
