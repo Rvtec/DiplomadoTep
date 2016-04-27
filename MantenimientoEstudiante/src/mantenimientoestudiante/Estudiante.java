@@ -10,19 +10,19 @@ package mantenimientoestudiante;
  * @author rvargas
  */
 public class Estudiante {
-    
+
     int matricula;
     String nombre;
     String apellido;
     String telefono;
-    
-    Estudiante(int matricula,String nombre, String apellido,String telefono){
-        this.apellido =apellido;
+
+    Estudiante(int matricula, String nombre, String apellido, String telefono) {
+        this.apellido = apellido;
         this.matricula = matricula;
-        this.nombre= nombre;
-        this.telefono= telefono;
+        this.nombre = nombre;
+        this.telefono = telefono;
     }
-    
+
     public String getNombre() {
         return nombre;
     }
@@ -48,12 +48,17 @@ public class Estudiante {
         this.telefono = telefono;
     }
 
- public String getApellido() {
+    public String getApellido() {
         return apellido;
     }
 
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
-    
+
+    @Override
+    public String toString() {
+        return this.getNombre() + this.getApellido() + this.getTelefono() + this.getMatricula();
+    }
+
 }

@@ -6,7 +6,9 @@
 package mantenimientoestudiante;
 
 import freemarker.template.Configuration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import spark.ModelAndView;
 import static spark.Spark.*;
@@ -23,6 +25,8 @@ public class MantenimientoEstudiante {
      */
     public static void main(String[] args) {
 
+        List<Estudiante> coleccion = new ArrayList<>();
+        
         staticFileLocation("/Recursos");
 
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
@@ -48,28 +52,30 @@ public class MantenimientoEstudiante {
             Map<String, Object> atributos = new HashMap<>();
             
             atributos.put("titulo", "Estudiantes");
-            atributos.put("estudiante", estudiante1);
-            /*
-              Map<String, Object> attributes = new HashMap<>();
-            attributes.put("titulo", "Procesando Estudiante");
-            attributes.put("estudiante", estudiante);*/
-            
-           /* System.out.println(estudiante1.matricula);
-            
-            return new ModelAndView(estudiante1, "");*/
-           
+            coleccion.add(estudiante1);
+            atributos.put("estudiante", coleccion);
+       
            return new ModelAndView(atributos, "estudiantesProcesados.ftl");
         }, freeMarkerEngine);
+        
         
 
         get("/estudiantes", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
             atributos.put("titulo", "Estudiantes");
+            //atributos.put("estudiante", estudiante1);
             return new ModelAndView(atributos, "estudiantes.ftl");
         }, freeMarkerEngine);
 
         
 
     }
+    
+    public static void guardar(Estudiante estudiante){
+        
+        
+            
+        }
+    
 
 }
