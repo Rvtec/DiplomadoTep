@@ -1,13 +1,19 @@
 div{
-    
-    border-color: red;
+    border-style: solid;
+    border-width: 1px;
+    width: 500px;
 }
 
-
-
-h1{
+input{
     
-    color: red;
-    font-size: small;
-    font-family: inherit;
+  width: 150px;
+  margin-top: 20px; 
+  right: 20px;
+  bottom: 20px;
+  font-family: Tahoma, Geneva, sans-serif;
+  height: 30px;
+  border-radius: 10px;
+  border: 2p solid #999;
+
 }
+
