@@ -21,8 +21,8 @@
                 <input type="hidden" name="borrarTelefono" value=${est.apellido}></input>
                     <td><button  name="Borrar" type="submit">Borrar</button></td></tr>
                     -->
-               <td> <a  href="/borrarEstudiante?borrarNombre=${est.nombre}&borrarMatricula=${est.matricula}&borrarApellido=${est.apellido}&borrarTelefono=${est.telefono}" target="_self" > <input method="post" type="submit" name="newestudiante" value="borrar" /> </a></td></tr>
-                    
+               <td> <a  href="/borrarEstudiante?borrarNombre=${est.nombre}&borrarMatricula=${est.matricula}&borrarApellido=${est.apellido}&borrarTelefono=${est.telefono}" target="_self" > <input  method="post" type="submit" name="borrar" value="borrar" /> </a></td></tr>
+               <td> <a  href="/modificarEstudiante?nombre=${est.nombre}&matricula=${est.matricula}&apellido=${est.apellido}&telefono=${est.telefono}" target="_self" > <input  method="post" type="submit" name="modificar" value="modificar" /> </a></td></tr>     
        </#list>
 
                 </tbody>

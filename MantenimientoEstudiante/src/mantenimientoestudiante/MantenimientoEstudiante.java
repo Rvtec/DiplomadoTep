@@ -7,6 +7,7 @@ package mantenimientoestudiante;
 
 import freemarker.template.Configuration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +43,7 @@ public class MantenimientoEstudiante {
         }, freeMarkerEngine);
 
         post("/estudiantesProcesados", (request, response) -> {
-            int matricula = Integer.parseInt(request.queryParams("Matricula"));
+            int matricula = Integer.parseInt(request.queryParams("Matricula").replace(",", ""));
             String nombre = request.queryParams("Nombre");
             String apellido = request.queryParams("Apellido");
             String telefono = request.queryParams("Telefono");
@@ -52,7 +53,28 @@ public class MantenimientoEstudiante {
             Map<String, Object> atributos = new HashMap<>();
 
             atributos.put("titulo", "Estudiantes");
-            coleccion.add(estudiante1);
+
+            boolean found = false;
+            int pos = 0;
+            
+                for (int i = 0; i < coleccion.size(); i++) {
+
+                    if (coleccion.get(i).matricula == matricula) {
+                        found = true;
+                        pos = i;
+                    }
+                
+            }
+
+            if (found == true) {
+                Collections.replaceAll(coleccion, coleccion.get(pos), estudiante1);
+                
+
+            } else {
+                coleccion.add(estudiante1);
+                
+            }
+
             atributos.put("estudiante", coleccion);
 
             return new ModelAndView(atributos, "estudiantesProcesados.ftl");
@@ -63,15 +85,15 @@ public class MantenimientoEstudiante {
             String matricula = request.queryParams("borrarMatricula");
             String apellido = request.queryParams("borrarApellido");
             String telefono = request.queryParams("borrarTelefono");
-            
-            
-            
+
             matricula = matricula.replace(",", "");
 
-           for (int i = 0; i < coleccion.size(); i++) {
+            for (int i = 0; i < coleccion.size(); i++) {
 
+                //Recorriendo el ArrayList y eliminando cuando sea igual a los
+                //parametros recibidos
                 String val = coleccion.get(i).toString();
-                System.out.println(val);
+                
                 if (val.equals(nombre + apellido + telefono + matricula)) {
                     coleccion.remove(i);
                 }
@@ -82,17 +104,34 @@ public class MantenimientoEstudiante {
 
             atributos.put("titulo", "Estudiantes");
             atributos.put("estudiante", coleccion);
-
+            //Enviando el map a la vista
             return new ModelAndView(atributos, "estudiantesProcesados.ftl");
         }, freeMarkerEngine);
 
         get("/estudiantes", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
             atributos.put("titulo", "Estudiantes");
-            //atributos.put("estudiante", estudiante1);
+            atributos.put("estudiante", coleccion);
             return new ModelAndView(atributos, "estudiantes.ftl");
+            
         }, freeMarkerEngine);
 
+        get("/modificarEstudiante", (request, response) -> {
+
+            String nombre = request.queryParams("nombre");
+            String matricula = request.queryParams("matricula");
+            String apellido = request.queryParams("apellido");
+            String telefono = request.queryParams("telefono");
+
+            Map<String, Object> atributos = new HashMap<>();
+            atributos.put("titulo", "Estudiantes");
+            atributos.put("nombre", nombre);
+            atributos.put("matricula", matricula);
+            atributos.put("apellido", apellido);
+            atributos.put("telefono", telefono);
+
+            return new ModelAndView(atributos, "formularioModif.ftl");
+        }, freeMarkerEngine);
     }
 
     public static void guardar(Estudiante estudiante) {

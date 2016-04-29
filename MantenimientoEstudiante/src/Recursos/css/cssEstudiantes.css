@@ -17,3 +17,15 @@ input{
 
 }
 
+.inner{
+    
+  width: 50px;
+  margin-top: 20px; 
+  right: 20px;
+  bottom: 20px;
+  font-family: Tahoma, Geneva, sans-serif;
+  height: 30px;
+  border-radius: 10px;
+  border: 2p solid #999;
+
+}
