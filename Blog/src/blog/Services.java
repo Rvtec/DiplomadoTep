@@ -7,6 +7,8 @@ package blog;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,8 +34,8 @@ public class Services {
         }
     }
 
-    private Connection getConexion() {
-        String url = "jdbc:h2:tcp://localhost/~/pruebaTep";
+    public static Connection getConexion() {
+        String url = "jdbc:h2:tcp://localhost/~/blog";
         Connection con = null;
         try {
             con = DriverManager.getConnection(url, "sa", "");
@@ -42,4 +44,83 @@ public class Services {
         }
         return con;
     }
+
+    public Usuario getUsuario(String usuario) {
+        Usuario user = null;
+        Connection con = null;
+
+        try {
+
+            String query = "select * from usuario where username = ?";
+            con = getConexion();
+
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+            //Antes de ejecutar seteo los parametros.
+            prepareStatement.setString(1, usuario);
+            //Ejecuto...
+            ResultSet rs = prepareStatement.executeQuery();
+            while (rs.next()) {
+                user = new Usuario();
+                user.setUsuario(rs.getString("username"));
+                user.setNombre(rs.getString("nombre"));
+                user.setContraseña(rs.getString("contraseña"));
+                user.setAdmin(rs.getBoolean("administrador"));
+                user.setAutor(rs.getBoolean("autor"));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return user;
+
+    }
+
+    public String crearUsuario(Usuario usuario) {
+
+        String estado = null;
+        if (getUsuario(usuario.getUsuario()) == null) {
+
+            Connection con = null;
+            try {
+
+                String query = "insert into usuario(username, nombre, contraseña, administrador, autor) values(?,?,?,?,?)";
+                con = getConexion();
+                //
+                PreparedStatement prepareStatement = con.prepareStatement(query);
+                //Antes de ejecutar seteo los parametros.
+                prepareStatement.setString(1, usuario.getUsuario());
+                prepareStatement.setString(2, usuario.getNombre());
+                prepareStatement.setString(3, usuario.getContraseña());
+                prepareStatement.setBoolean(4, usuario.isAdmin());
+                prepareStatement.setBoolean(5, usuario.isAutor());
+                //
+                 prepareStatement.executeUpdate();
+                //estado = fila ;
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            
+            }
+            estado= "Usuario creado";
+        } 
+        
+    else {
+        estado= "El usuario digitado ya existe";
+    }
+        return estado;
+}
 }

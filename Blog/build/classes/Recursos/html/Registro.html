@@ -25,53 +25,56 @@
                         <hr />
                     </div>
                 </div> 
-                <div class="main-login main-center">
-                    <form class="form-horizontal" method="post" action="#">
+                <div class="main-login main-center" >
+                    <form class="form-horizontal" method="post" action="/Registro">
 
-                        <div class="form-group">
+                        <div class="form-group" style="margin-top: 0px;">
                             <label for="name" class="cols-sm-2 control-label">Nombre</label>
                             <div class="cols-sm-10">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                    <input type="text" class="form-control" name="name" id="name"  placeholder="Enter your Name"/>
+                                    <input  title="Debe digitar el nombre" required type="text" class="form-control" name="Nombre" id="name"  placeholder="Digite Nombre"/>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="Usuario" class="cols-sm-2 control-label">Usuario</label>
-                            <div class="cols-sm-10">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
-                                    <input type="text" class="form-control" name="Usuario" id="email"  placeholder="Digite Usuario"/>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="Contraseña" class="cols-sm-2 control-label">Contraseña</label>
+                        <div class="form-group" style="margin-top: 0px;">
+                            <label for="Usuario" class="cols-sm-2 control-label" >Usuario</label>
                             <div class="cols-sm-10">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
-                                    <input type="text" class="form-control" name="Contraseña" id="username"  placeholder="Digite Contraseña"/>
+                                    <input title="Debe digitar un usuario" required type="text" class="form-control" name="Usuario" id="email"  placeholder="Digite Usuario"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 0px;">
+                            <label for="Contraseña" class="cols-sm-2 control-label">Contraseña</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                                    <input type="text" class="form-control" name="Contraseña" id="username"  placeholder="Digite Contraseña" required title="Debe digitar una contraseña"/>
                                 </div>
                             </div>
                         </div>
                         <div style="width: 500px;" class="checkbox">
-                            <label ><input type="checkbox" value="">Administrador</label>
+                            <label ><input type="checkbox" value="TRUE" name="Admin">Administrador</label>
                        
                         
                         
-                            <label style="margin-left: 60px;" ><input type="checkbox" value="">Autor</label>
+                            <label style="margin-left: 60px;" ><input type="checkbox" value="TRUE" name="Autor">Autor</label>
+                           
+                           <!-- <p>${mensaje}</p> -->
+                            
                         </div>
-                        
+                        <div class="form-group ">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block login-button" >Registrar</button>
+                    </div>
                     </form>
                     
                     
 
-                    <div class="form-group ">
-                        <button type="button" class="btn btn-primary btn-lg btn-block login-button">Register</button>
-                    </div>
+                    
                     <div class="login-register">
                         <a href="/Login">Login</a>
                     </div>
