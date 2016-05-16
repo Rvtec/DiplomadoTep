@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import spark.ModelAndView;
+import spark.Session;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.staticFileLocation;
@@ -72,8 +73,42 @@ public class Blog {
 
         post("/Blog", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
+            String usuario = request.queryParams("Usuario");
+            String contraseña = request.queryParams("password");
+            String mensaje = "";
+            Session sesion = request.session(true);
+            Services user = new Services();
+            Services articulo = new Services();
+            
+            atributos.put("mensaje", mensaje);
+            
+            
+            atributos.put("articulo", articulo.getArticulos());
+            
+            if (user.getUsuario(usuario) != null) {
+                if (contraseña.equalsIgnoreCase(user.getUsuario(usuario).getContraseña())) {
+                    System.out.println(mensaje);
+                    return new ModelAndView(atributos, "BlogHome.html");
+                    
+                    //sesion.attribute("usuario", usuario);
+                } else {
+                    mensaje = "Contraseña incorrecta";
+                    response.redirect("/Login");
+                    
+                    
+                    
+                    
+                }
+            } else {
+                
+                mensaje = "Usuario incorrecto";
+                response.redirect("/Login");
+                
+                
+            }
 
-            return new ModelAndView(atributos, "Login.html");
+            
+        return new ModelAndView(atributos, "BlogHome.html");
         }, freeMarkerEngine);
 
         get("/Registro", (request, response) -> {
@@ -92,7 +127,7 @@ public class Blog {
             String adm = request.queryParams("Admin");
             String aut = request.queryParams("Autor");
             String mensaje = null;
-            
+
 //Llevando los checkbox a tipo boolean
             boolean admin;
             boolean autor;
@@ -108,16 +143,14 @@ public class Blog {
                 autor = false;
             }
             Usuario usuario = new Usuario(username, nombre, contraseña, admin, autor);
-            Services servicio= new Services();
-            
-            if(servicio.crearUsuario(usuario)!= null){
-            mensaje=servicio.crearUsuario(usuario);
+            Services servicio = new Services();
+
+            if (servicio.crearUsuario(usuario) != null) {
+                mensaje = servicio.crearUsuario(usuario);
+            } else {
+                mensaje = "";
             }
-            else{
-            mensaje= "";
-            }
-            
-            
+
             atributos.put("mensaje", mensaje);
             //System.out.println(nombre + "  " + username + "  " + contraseña + "  " + admin + "  " + autor);
             return new ModelAndView(atributos, "Registro.html");

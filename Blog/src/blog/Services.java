@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,12 +53,12 @@ public class Services {
 
         try {
 
-            String query = "select * from usuario where username = ?";
+            String query = "select * from usuario where lower (username) = ?";
             con = getConexion();
 
             PreparedStatement prepareStatement = con.prepareStatement(query);
             //Antes de ejecutar seteo los parametros.
-            prepareStatement.setString(1, usuario);
+            prepareStatement.setString(1, usuario.toLowerCase());
             //Ejecuto...
             ResultSet rs = prepareStatement.executeQuery();
             while (rs.next()) {
@@ -123,4 +125,40 @@ public class Services {
     }
         return estado;
 }
+    public List<Articulo> getArticulos() {
+        
+        List<Articulo> lista = new ArrayList<>();
+        Connection con = null;
+        try {
+
+            String query = "select * from Articulo";
+            con = getConexion();
+            //
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+            ResultSet rs = prepareStatement.executeQuery();
+            while (rs.next()) {
+                Articulo art = new Articulo();
+                art.setAutor(rs.getString("autor"));
+                art.setId(rs.getInt("idarticulo"));
+                art.setTitulo(rs.getString("titulo"));
+                art.setFecha(rs.getDate("fecha"));
+                art.setCuerpo(rs.getString("cuerpo"));
+
+                lista.add(art);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return lista;
+
+    }
+    
 }
