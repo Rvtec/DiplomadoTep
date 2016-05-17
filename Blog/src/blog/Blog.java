@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import spark.ModelAndView;
 import spark.Session;
+import spark.Spark;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.staticFileLocation;
@@ -33,31 +34,32 @@ public class Blog {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
+        
         staticFileLocation("/Recursos");
-
+        
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
         configuration.setClassForTemplateLoading(Blog.class, "/Recursos/html");
         FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(configuration);
-
+        
         get("/Login", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
-
+            
             List<Articulo> lista = new ArrayList<>();
-
+            
             Connection con = null;
-
+            
             try {
-
+                
                 String query = "select * from usuario";
                 con = Services.getConexion();
                 //
                 PreparedStatement prepareStatement = con.prepareStatement(query);
                 ResultSet rs = prepareStatement.executeQuery();
+                
                 if (!rs.next()) {
                     response.redirect("/Registro");
                 }
-
+                
             } catch (SQLException ex) {
                 Logger.getLogger(Articulo.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
@@ -67,36 +69,31 @@ public class Blog {
                     Logger.getLogger(Articulo.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
+            
             return new ModelAndView(atributos, "Login.html");
         }, freeMarkerEngine);
-
+        
         post("/Blog", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
             String usuario = request.queryParams("Usuario");
             String contraseña = request.queryParams("password");
             String mensaje = "";
-            Session sesion = request.session(true);
             Services user = new Services();
             Services articulo = new Services();
             
             atributos.put("mensaje", mensaje);
-            
-            
             atributos.put("articulo", articulo.getArticulos());
-            
+
+            //Autenticacion
             if (user.getUsuario(usuario) != null) {
                 if (contraseña.equalsIgnoreCase(user.getUsuario(usuario).getContraseña())) {
-                    System.out.println(mensaje);
-                    return new ModelAndView(atributos, "BlogHome.html");
+                    //Creando sesion
+                    request.session(true);
+                    request.session().attribute("sesion", user.getUsuario(usuario));
                     
-                    //sesion.attribute("usuario", usuario);
                 } else {
                     mensaje = "Contraseña incorrecta";
                     response.redirect("/Login");
-                    
-                    
-                    
                     
                 }
             } else {
@@ -104,13 +101,22 @@ public class Blog {
                 mensaje = "Usuario incorrecto";
                 response.redirect("/Login");
                 
-                
             }
 
+            //Verificando permisos del usuario 
+            if (user.getUsuario(usuario).isAdmin()) {
+                String roladmin = "Crear Usuario";
+                atributos.put("roladmin", roladmin);
+            }
             
-        return new ModelAndView(atributos, "BlogHome.html");
+            if (user.getUsuario(usuario).isAutor()) {
+                String rolautor = "Crear Articulo";
+                atributos.put("rolautor", rolautor);
+            }
+            
+            return new ModelAndView(atributos, "BlogHome.html");
         }, freeMarkerEngine);
-
+        
         get("/Registro", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
             String mensaje = "";
@@ -136,7 +142,7 @@ public class Blog {
             } else {
                 admin = false;
             }
-
+            
             if ("TRUE".equals(aut)) {
                 autor = true;
             } else {
@@ -144,16 +150,30 @@ public class Blog {
             }
             Usuario usuario = new Usuario(username, nombre, contraseña, admin, autor);
             Services servicio = new Services();
-
+            
             if (servicio.crearUsuario(usuario) != null) {
                 mensaje = servicio.crearUsuario(usuario);
             } else {
                 mensaje = "";
             }
-
+            
             atributos.put("mensaje", mensaje);
             //System.out.println(nombre + "  " + username + "  " + contraseña + "  " + admin + "  " + autor);
             return new ModelAndView(atributos, "Registro.html");
         }, freeMarkerEngine);
+        
+        get("/Entrada", (request, response) -> {
+            Map<String, Object> atributos = new HashMap<>();
+            
+            Usuario sesion = request.session().attribute("sesion");
+            
+            if (sesion == null) {
+                response.redirect("/Login");
+            }
+            
+            return new ModelAndView(atributos, "BlogEntrada.html");
+        }, freeMarkerEngine);
+        
     }
+    
 }
