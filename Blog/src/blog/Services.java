@@ -7,6 +7,7 @@ package blog;
 
 import static com.sun.corba.se.spi.presentation.rmi.StubAdapter.request;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -105,8 +106,7 @@ public class Services {
                 prepareStatement.setBoolean(4, usuario.isAdmin());
                 prepareStatement.setBoolean(5, usuario.isAutor());
                 //
-                 prepareStatement.executeUpdate();
-                //estado = fila ;
+                prepareStatement.executeUpdate();
 
             } catch (SQLException ex) {
                 Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
@@ -116,19 +116,17 @@ public class Services {
                 } catch (SQLException ex) {
                     Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
-            
+
             }
-            estado= "Usuario creado";
-        } 
-        
-    else {
-        estado= "El usuario digitado ya existe";
-    }
+            estado = "Usuario creado";
+        } else {
+            estado = "El usuario digitado ya existe";
+        }
         return estado;
-}
+    }
+
     public List<Articulo> getArticulos() {
-        
+
         List<Articulo> lista = new ArrayList<>();
         Connection con = null;
         try {
@@ -162,9 +160,162 @@ public class Services {
         return lista;
 
     }
+
+    public boolean crearArticulo(Articulo articulo) {
+
+        boolean estado = false;
+
+        Connection con = null;
+        try {
+
+            String query = "insert into articulo(idarticulo, titulo, cuerpo, autor, fecha) values(?,?,?,?,?)";
+            con = getConexion();
+            //
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+            //Antes de ejecutar seteo los parametros.
+            prepareStatement.setInt(1, articulo.getId());
+            prepareStatement.setString(2, articulo.getTitulo());
+            prepareStatement.setString(3, articulo.getCuerpo());
+            prepareStatement.setString(4, articulo.getAutor());
+            prepareStatement.setDate(5, articulo.getFecha());
+
+            prepareStatement.executeUpdate();
+            estado = true;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+        return estado;
+
+    }
+
+    public int maxArticulo() {
+
+        int maxID = 0;
+        Connection con = null;
+        try {
+
+            String query = "select max(idarticulo) from articulo";
+            con = getConexion();
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+
+            ResultSet rs = prepareStatement.executeQuery();
+            //System.out.println(rs.);
+            rs.next();
+            maxID = rs.getInt("MAX(idarticulo)");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return maxID;
+    }
+
+    public int maxEtiqueta() {
+
+        int maxID = 0;
+        Connection con = null;
+        try {
+
+            String query = "select max(idetiqueta) from etiqueta";
+            con = getConexion();
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+
+            ResultSet rs = prepareStatement.executeQuery();
+            //System.out.println(rs.);
+            rs.next();
+            maxID = rs.getInt("MAX(IDETIQUETA)");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return maxID;
+    }
+
+    public boolean crearEtiqueta(Etiqueta etiqueta) {
+
+        boolean estado = false;
+
+        Connection con = null;
+
+        try {
+
+            String query = "insert into etiqueta(idetiqueta, etiqueta, idarticulo) values(?,?,?)";
+            con = getConexion();
+            //
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+            //Antes de ejecutar seteo los parametros.
+            prepareStatement.setInt(1, etiqueta.getIdetiqueta());
+            prepareStatement.setString(2, etiqueta.getEtiqueta());
+            prepareStatement.setInt(3, etiqueta.getIdarticulo());
+
+            prepareStatement.executeUpdate();
+            estado = true;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+        return estado;
+    }
     
-    
-        
-    
-    
+  public Articulo getEntrada(int id) {
+
+        Articulo articulo= new Articulo();
+        Connection con = null;
+        try {
+
+            String query = "select * from articulo where idarticulo = ?";
+            con = getConexion();
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+            prepareStatement.setInt(1, id);
+            ResultSet rs = prepareStatement.executeQuery();
+            
+            rs.next();
+            articulo.setAutor(rs.getString("autor"));
+            articulo.setCuerpo(rs.getString("cuerpo"));
+            articulo.setFecha(rs.getDate("fecha"));
+            articulo.setId(rs.getInt("idarticulo"));
+            articulo.setTitulo(rs.getString("titulo"));
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return articulo;
+    }
 }

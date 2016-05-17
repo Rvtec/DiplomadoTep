@@ -17,11 +17,19 @@ public class Articulo {
     private String titulo;
     private String cuerpo;
     private String autor;
-    private Date fecha;
+    private java.sql.Date fecha;
 
     
-    public Articulo(){
+    Articulo(){
     
+    }
+    
+    public Articulo(int idarticulo, String titulo,String cuerpo, String autor, java.sql.Date fecha){
+        setId(idarticulo);
+        setTitulo(titulo);
+        setCuerpo(cuerpo);
+        setAutor(autor);
+        setFecha(fecha);
     }
     /**
      * @return the id
@@ -34,7 +42,7 @@ public class Articulo {
      * @param id the id to set
      */
     public void setId(int id) {
-        this.idarticulo = idarticulo;
+        this.idarticulo = id;
     }
 
     /**
@@ -82,14 +90,14 @@ public class Articulo {
     /**
      * @return the fecha
      */
-    public Date getFecha() {
+    public java.sql.Date getFecha() {
         return fecha;
     }
 
     /**
      * @param fecha the fecha to set
      */
-    public void setFecha(Date fecha) {
+    public void setFecha(java.sql.Date fecha) {
         this.fecha = fecha;
     }
     

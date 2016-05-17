@@ -15,6 +15,17 @@ public class Etiqueta {
     private String etiqueta;
     private int idarticulo;
 
+    Etiqueta(){
+    
+    }
+    
+    Etiqueta(int idetiqueta, String etiqueta, int idarticulo){
+    
+        setEtiqueta(etiqueta);
+        setIdarticulo(idarticulo);
+        setIdetiqueta(idetiqueta);
+    }
+    
     /**
      * @return the idetiqueta
      */

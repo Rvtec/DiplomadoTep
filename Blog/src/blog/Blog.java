@@ -7,11 +7,18 @@ package blog;
 
 import freemarker.template.Configuration;
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -34,32 +41,33 @@ public class Blog {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+
         staticFileLocation("/Recursos");
-        
+
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
         configuration.setClassForTemplateLoading(Blog.class, "/Recursos/html");
         FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(configuration);
-        
+
+        //Pantalla de Login
         get("/Login", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
-            
+
             List<Articulo> lista = new ArrayList<>();
-            
+
             Connection con = null;
-            
+
             try {
-                
+
                 String query = "select * from usuario";
                 con = Services.getConexion();
                 //
                 PreparedStatement prepareStatement = con.prepareStatement(query);
                 ResultSet rs = prepareStatement.executeQuery();
-                
+
                 if (!rs.next()) {
                     response.redirect("/Registro");
                 }
-                
+
             } catch (SQLException ex) {
                 Logger.getLogger(Articulo.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
@@ -69,10 +77,35 @@ public class Blog {
                     Logger.getLogger(Articulo.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+
             return new ModelAndView(atributos, "Login.html");
         }, freeMarkerEngine);
-        
+
+        //Get al blog 
+        get("/Blog", (request, response) -> {
+            Map<String, Object> atributos = new HashMap<>();
+            Usuario sesion = request.session().attribute("sesion");
+            Services articulo = new Services();
+            Usuario usu = request.session().attribute("sesion");
+
+            if (usu != null) {
+                if (usu.isAdmin()) {
+                    String roladmin = "Crear Usuario";
+                    atributos.put("roladmin", roladmin);
+                }
+
+                if (usu.isAutor()) {
+                    String rolautor = "Crear Articulo";
+                    atributos.put("rolautor", rolautor);
+                }
+            }
+
+            atributos.put("articulo", articulo.getArticulos());
+
+            return new ModelAndView(atributos, "BlogHome.html");
+        }, freeMarkerEngine);
+
+        //Post al blog, se ejecuta al hacer login
         post("/Blog", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
             String usuario = request.queryParams("Usuario");
@@ -80,7 +113,7 @@ public class Blog {
             String mensaje = "";
             Services user = new Services();
             Services articulo = new Services();
-            
+
             atributos.put("mensaje", mensaje);
             atributos.put("articulo", articulo.getArticulos());
 
@@ -90,17 +123,17 @@ public class Blog {
                     //Creando sesion
                     request.session(true);
                     request.session().attribute("sesion", user.getUsuario(usuario));
-                    
+
                 } else {
                     mensaje = "Contraseña incorrecta";
                     response.redirect("/Login");
-                    
+
                 }
             } else {
-                
+
                 mensaje = "Usuario incorrecto";
                 response.redirect("/Login");
-                
+
             }
 
             //Verificando permisos del usuario 
@@ -108,15 +141,67 @@ public class Blog {
                 String roladmin = "Crear Usuario";
                 atributos.put("roladmin", roladmin);
             }
-            
+
             if (user.getUsuario(usuario).isAutor()) {
                 String rolautor = "Crear Articulo";
                 atributos.put("rolautor", rolautor);
             }
-            
+
             return new ModelAndView(atributos, "BlogHome.html");
         }, freeMarkerEngine);
-        
+
+        //Para acceder a un articulo completo
+        post("/BlogPost", (request, response) -> {
+            Map<String, Object> atributos = new HashMap<>();
+            int id = Integer.parseInt(request.queryParams("id"));
+            String titulo = request.queryParams("titulo");
+            String cuerpo = request.queryParams("cuerpo");
+            String etiquetas = request.queryParams("etiquetas").replace(" ", "");
+            Date fecha = new java.util.Date();
+            java.sql.Date fechasql = new java.sql.Date(fecha.getTime());
+
+            //Instancia de Services utilizada para crear articulo y etiquetas
+            Services articulo = new Services();
+
+            //Instancia de Etiqueta utilizada para crear etiquetas
+            Etiqueta etiqueta = new Etiqueta();
+
+            //Objeto tipo usuario utilizado para obtener usuario en sesion
+            Usuario usu = request.session().attribute("sesion");
+
+            //Variable creada para tomar el usuario de la sesion en string
+            String autor = usu.getUsuario();
+
+            //Instancia de Articulo utilizada para crear el articulo
+            Articulo articulo1 = new Articulo(id, titulo, cuerpo, autor, fechasql);
+            
+            articulo.crearArticulo(articulo1);
+
+            //Instancia de Services utilizada para buscar max etiqueta
+            Services idMax = new Services();
+
+            //For utilizado para separar las etiquetas y mandarlas a la BD
+            if(articulo.crearArticulo(articulo1) == true){
+            for (String tags : etiquetas.split(",")) {
+
+                etiqueta.setEtiqueta(tags);
+                etiqueta.setIdarticulo(id);
+                etiqueta.setIdetiqueta(idMax.maxEtiqueta() + 1);
+                articulo.crearEtiqueta(etiqueta);
+
+            }
+            }
+
+            atributos.put("autor", articulo.getEntrada(id).getAutor());
+            atributos.put("titulo", articulo.getEntrada(id).getTitulo());
+            atributos.put("cuerpo", articulo.getEntrada(id).getCuerpo());
+            atributos.put("id", articulo.getEntrada(id).getId());
+            atributos.put("fecha", articulo.getEntrada(id).getFecha());
+            
+            return new ModelAndView(atributos, "BlogPost.html");
+        }, freeMarkerEngine);
+
+        //Pantalla para registrar usuario, se ejecuta desde el login boton registrar
         get("/Registro", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
             String mensaje = "";
@@ -142,38 +227,48 @@ public class Blog {
             } else {
                 admin = false;
             }
-            
+
             if ("TRUE".equals(aut)) {
                 autor = true;
             } else {
                 autor = false;
             }
+            
             Usuario usuario = new Usuario(username, nombre, contraseña, admin, autor);
             Services servicio = new Services();
-            
+
             if (servicio.crearUsuario(usuario) != null) {
                 mensaje = servicio.crearUsuario(usuario);
             } else {
                 mensaje = "";
             }
-            
+
             atributos.put("mensaje", mensaje);
             //System.out.println(nombre + "  " + username + "  " + contraseña + "  " + admin + "  " + autor);
             return new ModelAndView(atributos, "Registro.html");
         }, freeMarkerEngine);
-        
+
         get("/Entrada", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
-            
+            Services id = new Services();
+            int idart;
             Usuario sesion = request.session().attribute("sesion");
-            
+
             if (sesion == null) {
                 response.redirect("/Login");
             }
+
             
+
+            //Llamando metodo maxArticulo para determinar el mayor articulo
+            //y luego aumentar 1 para guardar nuevo articulo
+            idart = id.maxArticulo() + 1;
+
+            atributos.put("id", idart);
+
             return new ModelAndView(atributos, "BlogEntrada.html");
         }, freeMarkerEngine);
-        
+
     }
-    
+
 }

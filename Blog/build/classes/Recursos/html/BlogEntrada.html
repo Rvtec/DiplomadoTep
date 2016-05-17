@@ -59,14 +59,14 @@
 
 <!-- Contact Form -->
 		<div class="c-form-container section-container section-container-image-bg" >
-	        <div class="container">
+	        <div class="container" >
 	        	
 	           
 	            
 	            <div class="row">
 	            	<div class="col-sm-6 col-sm-offset-3 c-form-box wow fadeInUp">
 	            		
-	                    <div class="c-form-top">
+	                    <div class="c-form-top" >
                     		
                     		<div class="c-form-top-right">
                     			<div class="c-form-top-right-icon">
@@ -74,41 +74,49 @@
                     			</div>
                     		</div>
                         </div>
+                            <div class="panel panel-default" style="margin-top: 150px;">
+                                <div class="panel-body">
                         <div class="c-form-bottom">
-                            <form style="margin-top: 200px;" role="form" action="/BlogPost" method="post">
+                            <form style="margin-top: 20px;" role="form" action="/BlogPost" method="post">
 		                    	<div class="form-group">
 		                    		<label for="c-form-name">
 		                    			<span class="label-text">Titulo</span> 
 		                    			<span class="contact-error"></span>
 		                    		</label>
-		                        	<input type="text" name="name" placeholder="Digite Titulo" class="c-form-name form-control" id="c-form-name">
+		                        	<input type="text" name="titulo" placeholder="Digite Titulo" class="c-form-name form-control" id="c-form-name">
 		                        </div>
 		                    	<div class="form-group">
 		                    		<label for="c-form-email">
 		                    			<span class="label-text">Cuerpo</span> 
 		                    			<span class="contact-error"></span>
 		                    		</label>
-		                        	<textarea name="message" placeholder="Digite Cuerpo" class="c-form-message form-control" id="c-form-message"></textarea>
+		                        	<textarea name="cuerpo" placeholder="Digite Cuerpo" class="c-form-message form-control" id="c-form-message"></textarea>
 		                        </div>
 		                        <div class="form-group">
 		                        	<label for="c-form-subject">
 		                    			<span class="label-text">Etiquetas</span> 
 		                    			<span class="contact-error"></span>
 		                    		</label>
-		                        	<input type="text" name="subject" placeholder="Digite Etiquetas" class="c-form-subject form-control" id="c-form-subject">
+		                        	<input  type="text" name="etiquetas" placeholder="Digite Etiquetas" class="c-form-subject form-control" id="c-form-subject">
 		                        </div>
-		                        
-		                        <button type="submit" class="btn">Send message</button>
+                                <div>
+                                <#if id??>
+                                <input value="${id}" name="id">
+                                </#if>
+                                </div>
+		                        <button type="submit" class="btn btn-primary">Publicar</button>
+                                        <a href="/Blog"><buttom class="btn btn-primary">Salir</buttom></a>
 		                    </form>
 	                    </div>
-	                    
+                                    </div>
+	                    </div>
 	                </div>
 	            </div>
 	            
 	        
 	            </div>
-	            
-	        </div>
+	             
+	        
         </div>
     </body>
 
