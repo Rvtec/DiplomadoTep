@@ -84,11 +84,15 @@ public class Blog {
         //Get al blog 
         get("/Blog", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
-            Usuario sesion = request.session().attribute("sesion");
+            System.out.println(request.url());
             Services articulo = new Services();
             Usuario usu = request.session().attribute("sesion");
+            atributos.put("articulo", articulo.getArticulos());
 
             if (usu != null) {
+                
+                atributos.put("usuario", usu.getUsuario());
+                
                 if (usu.isAdmin()) {
                     String roladmin = "Crear Usuario";
                     atributos.put("roladmin", roladmin);
@@ -99,8 +103,11 @@ public class Blog {
                     atributos.put("rolautor", rolautor);
                 }
             }
+            else{
+                atributos.put("login", "Login");
+            }
 
-            atributos.put("articulo", articulo.getArticulos());
+            
 
             return new ModelAndView(atributos, "BlogHome.html");
         }, freeMarkerEngine);
@@ -116,6 +123,7 @@ public class Blog {
 
             atributos.put("mensaje", mensaje);
             atributos.put("articulo", articulo.getArticulos());
+            
 
             //Autenticacion
             if (user.getUsuario(usuario) != null) {
@@ -146,11 +154,74 @@ public class Blog {
                 String rolautor = "Crear Articulo";
                 atributos.put("rolautor", rolautor);
             }
+            
+            //Mandando datos de la sesion
+            Usuario usu = request.session().attribute("sesion");
+
+            if (usu != null) {
+                
+                atributos.put("usuario", usu.getUsuario());
+                
+                if (usu.isAdmin()) {
+                    String roladmin = "Crear Usuario";
+                    atributos.put("roladmin", roladmin);
+                }
+
+                if (usu.isAutor()) {
+                    String rolautor = "Crear Articulo";
+                    atributos.put("rolautor", rolautor);
+                }
+            }
+            else{
+                atributos.put("login", "Login");
+            }
 
             return new ModelAndView(atributos, "BlogHome.html");
         }, freeMarkerEngine);
+        
+        //Para ver articulo completo
+        get("/BlogPost", (request, response) -> {
+            Map<String, Object> atributos = new HashMap<>();
+            int id = Integer.parseInt(request.queryParams("id"));
+            
+            Services articulo = new Services();
+           Services comentario= new Services();
+           
+            atributos.put("autor", articulo.getEntrada(id).getAutor());
+            atributos.put("titulo", articulo.getEntrada(id).getTitulo());
+            atributos.put("cuerpo", articulo.getEntrada(id).getCuerpo());
+            atributos.put("id", articulo.getEntrada(id).getId());
+            atributos.put("fecha", articulo.getEntrada(id).getFecha());
+            
+            //Mandando datos de la sesion
+            Usuario usu = request.session().attribute("sesion");
 
-        //Para acceder a un articulo completo
+            if (usu != null) {
+                
+                atributos.put("usuario", usu.getUsuario());
+                
+                if (usu.isAdmin()) {
+                    String roladmin = "Crear Usuario";
+                    atributos.put("roladmin", roladmin);
+                }
+
+                if (usu.isAutor()) {
+                    String rolautor = "Crear Articulo";
+                    atributos.put("rolautor", rolautor);
+                }
+            }
+            else{
+                atributos.put("login", "Login");
+            }
+            
+            //Procesar comentario
+            int idcomentario = comentario.maxComentario() + 1 ;
+            atributos.put("idcomentario", idcomentario);
+            
+            return new ModelAndView(atributos, "BlogPost.html");
+        }, freeMarkerEngine);
+
+        //Para crear y acceder al articulo creado
         post("/BlogPost", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
             int id = Integer.parseInt(request.queryParams("id"));
@@ -175,13 +246,14 @@ public class Blog {
             //Instancia de Articulo utilizada para crear el articulo
             Articulo articulo1 = new Articulo(id, titulo, cuerpo, autor, fechasql);
             
-            articulo.crearArticulo(articulo1);
-
+            
             //Instancia de Services utilizada para buscar max etiqueta
             Services idMax = new Services();
 
-            //For utilizado para separar las etiquetas y mandarlas a la BD
+            //Creando Articulo y Etiquetas
+            
             if(articulo.crearArticulo(articulo1) == true){
+            //For utilizado para separar las etiquetas y mandarlas a la BD
             for (String tags : etiquetas.split(",")) {
 
                 etiqueta.setEtiqueta(tags);
@@ -191,14 +263,17 @@ public class Blog {
 
             }
             }
-
+            
+            
             atributos.put("autor", articulo.getEntrada(id).getAutor());
             atributos.put("titulo", articulo.getEntrada(id).getTitulo());
             atributos.put("cuerpo", articulo.getEntrada(id).getCuerpo());
             atributos.put("id", articulo.getEntrada(id).getId());
             atributos.put("fecha", articulo.getEntrada(id).getFecha());
             
-            return new ModelAndView(atributos, "BlogPost.html");
+            response.redirect("/BlogPost?id=" + articulo.getEntrada(id).getId());
+            
+            return new ModelAndView(atributos, "");
         }, freeMarkerEngine);
 
         //Pantalla para registrar usuario, se ejecuta desde el login boton registrar
@@ -219,7 +294,7 @@ public class Blog {
             String aut = request.queryParams("Autor");
             String mensaje = null;
 
-//Llevando los checkbox a tipo boolean
+        //Llevando los checkbox a tipo boolean
             boolean admin;
             boolean autor;
             if ("TRUE".equals(adm)) {
@@ -268,7 +343,36 @@ public class Blog {
 
             return new ModelAndView(atributos, "BlogEntrada.html");
         }, freeMarkerEngine);
+        
+        get("/Logout", (request, response) -> {
+            Map<String, Object> atributos = new HashMap<>();
+            
+            request.session().invalidate();
+            response.redirect("/Blog");
 
+            return new ModelAndView(atributos, "BlogHome.html");
+        }, freeMarkerEngine);
+
+        post("/Comentario", (request, response) -> {
+            Map<String, Object> atributos = new HashMap<>();
+            String comentario = request.queryParams("comentario");
+            int idcomentario = Integer.parseInt(request.queryParams("idcomentario"));
+            int idarticulo = Integer.parseInt(request.queryParams("id"));
+            
+            Usuario sesion = request.session().attribute("sesion");
+            String autor= sesion.getUsuario();
+            
+            
+            Comentario comentario1= new Comentario(idcomentario,comentario,autor,idarticulo);
+            
+            //Guardando comentario
+            Services savecoment = new Services();
+            
+            savecoment.crearComentario(comentario1);
+            
+            atributos.put("comentario", comentario1);
+            return new ModelAndView(atributos, "Registro.html");
+        }, freeMarkerEngine);
     }
 
 }

@@ -16,6 +16,13 @@ public class Comentario  {
     private String autor;
     private int idarticulo;
 
+    Comentario(int idcomentario, String comentario, String autor, int idarticulo){
+        setAutor(autor);
+        setComentario(comentario);
+        setIdarticulo(idarticulo);
+        setIdcomentario(idcomentario);
+    }
+    
     /**
      * @return the idcomentario
      */

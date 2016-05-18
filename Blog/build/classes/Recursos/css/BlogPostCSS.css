@@ -11,3 +11,52 @@ body {
 footer {
     margin: 50px 0;
 }
+
+.navbar-inverse .navbar-nav>div>navbar-btn:hover {
+    background-color: #e60000;
+    
+}
+
+.navbar-inverse .navbar-nav>div>navbar-btn{
+    color: white;
+    background-color:#ff1a1a; 
+    font-family: 'Droid Serif', serif;
+    height: 0.1;
+    margin-top: 500;
+    margin-left: 200;
+    
+    
+}
+
+#boton:hover{
+    background-color: #e60000;
+    
+}
+
+#boton{
+    color: white;
+    background-color:#ff1a1a; 
+    font-family: 'Droid Serif', serif;
+    height: 0.1;
+    margin-top: 500;    
+    
+}
+
+#usuario{
+    
+    margin-left: 100;
+}
+
+#botonlog{
+    color: white;
+    background-color:#1aa3ff; 
+    font-family: 'Droid Serif', serif;
+    height: 0.1;
+    margin-top: 500;    
+    
+}
+
+#botonlog:hover{
+    background-color: #008ae6;
+    
+}

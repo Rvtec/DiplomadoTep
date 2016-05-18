@@ -25,15 +25,20 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Start Bootstrap</a>
+                    <a class="navbar-brand" href="/Blog">F1 Blog</a>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="#">Inicio</a>
+                            <a href="/Blog">Inicio</a>
                         </li>
-                        
+                        <li>
+                            <a href="#">Acerca</a>
+                        </li>
+                        <li>
+                            <a href="#">Contacto</a>
+                        </li>
                         <#if roladmin??>
                         <li>
                             <a href="/Registro">${roladmin}</a>
@@ -43,14 +48,65 @@
                         <li>
                             <a href="/Registro">${rolautor}</a>
                         </li>
+                        </#if><li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+                        <li>
+                            <a></a>
+                        </li>
+
+                        <#if usuario??>
+                        <li style="margin-top: 500; ">
+                            <a id="usuario" style="color: white" >${usuario}</a>
+                        </li>
                         </#if>
-                        <li>
-                            <a href="#">Acerca</a>
-                        </li>
-                        <li>
-                            <a href="#">Contact</a>
-                        </li>
+
                     </ul>
+
+                    <#if login??>
+                    <div class="navbar-right" style="float: right">
+
+
+                        <a class="btn navbar-btn" id="botonlog" href="/Login">Login</a>
+                    </div>
+                    </#if>
+                    <#if usuario??>
+                    <div class="navbar-right" style="float: right">
+
+
+                        <a class="btn btn-danger navbar-btn" id="boton" href="/Logout">Logout</a>
+                    </div>
+                    </#if>
                 </div>
                 <!-- /.navbar-collapse -->
             </div>

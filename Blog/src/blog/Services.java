@@ -131,7 +131,7 @@ public class Services {
         Connection con = null;
         try {
 
-            String query = "select * from Articulo";
+            String query = "select * from Articulo order by fecha desc";
             con = getConexion();
             //
             PreparedStatement prepareStatement = con.prepareStatement(query);
@@ -287,6 +287,8 @@ public class Services {
         return estado;
     }
     
+    
+    
   public Articulo getEntrada(int id) {
 
         Articulo articulo= new Articulo();
@@ -317,5 +319,68 @@ public class Services {
 
         }
         return articulo;
+    }
+  
+   public int maxComentario() {
+
+        int maxID = 0;
+        Connection con = null;
+        try {
+
+            String query = "select max(idcomentario) from comentario";
+            con = getConexion();
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+
+            ResultSet rs = prepareStatement.executeQuery();
+            //System.out.println(rs.);
+            rs.next();
+            maxID = rs.getInt("MAX(idcomentario)");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return maxID;
+    }
+   
+   public boolean crearComentario(Comentario comentario) {
+
+        boolean estado = false;
+
+        Connection con = null;
+
+        try {
+
+            String query = "insert into comentario(idcomentario, comentario, autor, idarticulo) values(?,?,?,?)";
+            con = getConexion();
+            //
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+            //Antes de ejecutar seteo los parametros.
+            prepareStatement.setInt(1, comentario.getIdcomentario());
+            prepareStatement.setString(2, comentario.getComentario());
+            prepareStatement.setString(3, comentario.getAutor());
+            prepareStatement.setInt(1, comentario.getIdarticulo());
+
+            prepareStatement.executeUpdate();
+            estado = true;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+        return estado;
     }
 }
