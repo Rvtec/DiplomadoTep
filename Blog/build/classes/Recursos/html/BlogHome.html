@@ -155,9 +155,18 @@
                     </p>
                     <p><span class="glyphicon glyphicon-time"></span>${art.fecha}</p>
                     <hr>
-                    <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+                    <#if art.imagen??>
+                    <img class="img-responsive" src=${art.imagen} alt="">
+                    </#if>
                     <hr>
                     <p>${art.cuerpo}</p>
+                    <#list etiquetas as tag>
+                    <ul>
+                        <li>${tag.etiqueta}</li>
+                    </ul>
+                    <#else><h4>Joder</h4>
+                    </#list>
+                    
                     <a class="btn btn-primary" href="/BlogPost?id=${art.id}">Leer Más <span class="glyphicon glyphicon-chevron-right"></span></a>
 
                     <hr>

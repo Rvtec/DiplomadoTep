@@ -18,18 +18,20 @@ public class Articulo {
     private String cuerpo;
     private String autor;
     private java.sql.Date fecha;
+    private String imagen;
 
     
     Articulo(){
     
     }
     
-    public Articulo(int idarticulo, String titulo,String cuerpo, String autor, java.sql.Date fecha){
+    public Articulo(int idarticulo, String titulo,String cuerpo, String autor, java.sql.Date fecha, String imagen){
         setId(idarticulo);
         setTitulo(titulo);
         setCuerpo(cuerpo);
         setAutor(autor);
         setFecha(fecha);
+        setImagen(imagen);
     }
     /**
      * @return the id
@@ -99,6 +101,20 @@ public class Articulo {
      */
     public void setFecha(java.sql.Date fecha) {
         this.fecha = fecha;
+    }
+
+    /**
+     * @return the imagen
+     */
+    public String getImagen() {
+        return imagen;
+    }
+
+    /**
+     * @param imagen the imagen to set
+     */
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
     
 }

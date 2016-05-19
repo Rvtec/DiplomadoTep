@@ -84,11 +84,23 @@ public class Blog {
         //Get al blog 
         get("/Blog", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
-            System.out.println(request.url());
+            
             Services articulo = new Services();
+            Services etiquetas = new Services();
             Usuario usu = request.session().attribute("sesion");
+            List<Articulo> lista = articulo.getArticulos();
+            
+            //Recorriendo lista de articulos y enviando lista de etiquetas de cada uno
+            for(Articulo art : lista ){
+                List<Etiqueta> tags = etiquetas.getEtiqueta(art.getId());
+                
+                atributos.put("etiquetas", tags);
+                //System.out.println(etiquetas.getEtiqueta(art.getId()).isEmpty());
+            }
+            
+            
             atributos.put("articulo", articulo.getArticulos());
-
+            
             if (usu != null) {
                 
                 atributos.put("usuario", usu.getUsuario());
@@ -185,13 +197,16 @@ public class Blog {
             int id = Integer.parseInt(request.queryParams("id"));
             
             Services articulo = new Services();
-           Services comentario= new Services();
+            Services comentario= new Services();
            
             atributos.put("autor", articulo.getEntrada(id).getAutor());
             atributos.put("titulo", articulo.getEntrada(id).getTitulo());
             atributos.put("cuerpo", articulo.getEntrada(id).getCuerpo());
             atributos.put("id", articulo.getEntrada(id).getId());
             atributos.put("fecha", articulo.getEntrada(id).getFecha());
+            atributos.put("imagen", articulo.getEntrada(id).getImagen());
+            
+            
             
             //Mandando datos de la sesion
             Usuario usu = request.session().attribute("sesion");
@@ -214,7 +229,11 @@ public class Blog {
                 atributos.put("login", "Login");
             }
             
-            //Procesar comentario
+            
+            //Listar comentarios
+            List<Comentario> comentarios = comentario.getComentarios(id);
+            atributos.put("comentarios", comentarios);
+            //Enviar el siguiente id de comentario al template
             int idcomentario = comentario.maxComentario() + 1 ;
             atributos.put("idcomentario", idcomentario);
             
@@ -228,8 +247,11 @@ public class Blog {
             String titulo = request.queryParams("titulo");
             String cuerpo = request.queryParams("cuerpo");
             String etiquetas = request.queryParams("etiquetas").replace(" ", "");
+            String imagen = request.queryParams("imagen");
             Date fecha = new java.util.Date();
             java.sql.Date fechasql = new java.sql.Date(fecha.getTime());
+            
+            
 
             //Instancia de Services utilizada para crear articulo y etiquetas
             Services articulo = new Services();
@@ -244,7 +266,7 @@ public class Blog {
             String autor = usu.getUsuario();
 
             //Instancia de Articulo utilizada para crear el articulo
-            Articulo articulo1 = new Articulo(id, titulo, cuerpo, autor, fechasql);
+            Articulo articulo1 = new Articulo(id, titulo, cuerpo, autor, fechasql, imagen);
             
             
             //Instancia de Services utilizada para buscar max etiqueta
@@ -254,6 +276,7 @@ public class Blog {
             
             if(articulo.crearArticulo(articulo1) == true){
             //For utilizado para separar las etiquetas y mandarlas a la BD
+            if (etiquetas!=null){
             for (String tags : etiquetas.split(",")) {
 
                 etiqueta.setEtiqueta(tags);
@@ -263,13 +286,15 @@ public class Blog {
 
             }
             }
+            }
             
             
-            atributos.put("autor", articulo.getEntrada(id).getAutor());
+            /*atributos.put("autor", articulo.getEntrada(id).getAutor());
             atributos.put("titulo", articulo.getEntrada(id).getTitulo());
             atributos.put("cuerpo", articulo.getEntrada(id).getCuerpo());
             atributos.put("id", articulo.getEntrada(id).getId());
             atributos.put("fecha", articulo.getEntrada(id).getFecha());
+            atributos.put("imagen", articulo.getEntrada(id).getImagen());*/
             
             response.redirect("/BlogPost?id=" + articulo.getEntrada(id).getId());
             
@@ -319,7 +344,7 @@ public class Blog {
             }
 
             atributos.put("mensaje", mensaje);
-            //System.out.println(nombre + "  " + username + "  " + contraseña + "  " + admin + "  " + autor);
+            
             return new ModelAndView(atributos, "Registro.html");
         }, freeMarkerEngine);
 
@@ -357,10 +382,11 @@ public class Blog {
             Map<String, Object> atributos = new HashMap<>();
             String comentario = request.queryParams("comentario");
             int idcomentario = Integer.parseInt(request.queryParams("idcomentario"));
-            int idarticulo = Integer.parseInt(request.queryParams("id"));
+            int idarticulo = Integer.parseInt(request.queryParams("idarticulo"));
             
             Usuario sesion = request.session().attribute("sesion");
             String autor= sesion.getUsuario();
+            Services articulo = new Services();
             
             
             Comentario comentario1= new Comentario(idcomentario,comentario,autor,idarticulo);
@@ -371,7 +397,8 @@ public class Blog {
             savecoment.crearComentario(comentario1);
             
             atributos.put("comentario", comentario1);
-            return new ModelAndView(atributos, "Registro.html");
+            response.redirect("/BlogPost?id=" + idarticulo);
+            return new ModelAndView(atributos, "");
         }, freeMarkerEngine);
     }
 

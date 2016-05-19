@@ -139,21 +139,28 @@
 		                    			<span class="label-text">Titulo</span> 
 		                    			<span class="contact-error"></span>
 		                    		</label>
-		                        	<input type="text" name="titulo" placeholder="Digite Titulo" class="c-form-name form-control" id="c-form-name">
+                                            <input required type="text" name="titulo" placeholder="Digite Titulo" class="c-form-name form-control" id="c-form-name">
 		                        </div>
 		                    	<div class="form-group">
 		                    		<label for="c-form-email">
 		                    			<span class="label-text">Cuerpo</span> 
 		                    			<span class="contact-error"></span>
 		                    		</label>
-		                        	<textarea name="cuerpo" placeholder="Digite Cuerpo" class="c-form-message form-control" id="c-form-message"></textarea>
+                                            <textarea required name="cuerpo" placeholder="Digite Cuerpo" class="c-form-message form-control" id="c-form-message"></textarea>
+		                        </div>
+                                <div class="form-group">
+		                        	<label for="c-form-subject">
+		                    			<span class="label-text">Link Imagen</span> 
+		                    			<span class="contact-error"></span>
+		                    		</label>
+                                    <input required type="text" name="imagen" placeholder="Introduzca link de imagen" class="c-form-subject form-control" id="c-form-subject">
 		                        </div>
 		                        <div class="form-group">
 		                        	<label for="c-form-subject">
 		                    			<span class="label-text">Etiquetas</span> 
 		                    			<span class="contact-error"></span>
 		                    		</label>
-		                        	<input  type="text" name="etiquetas" placeholder="Digite Etiquetas" class="c-form-subject form-control" id="c-form-subject">
+                                            <input  type="text" name="etiquetas" placeholder="Digite Etiquetas" class="c-form-subject form-control" id="c-form-subject">
 		                        </div>
                                 <div>
                                 <#if id??>

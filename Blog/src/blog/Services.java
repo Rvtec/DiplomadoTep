@@ -131,7 +131,7 @@ public class Services {
         Connection con = null;
         try {
 
-            String query = "select * from Articulo order by fecha desc";
+            String query = "select * from Articulo order by idarticulo desc";
             con = getConexion();
             //
             PreparedStatement prepareStatement = con.prepareStatement(query);
@@ -143,7 +143,7 @@ public class Services {
                 art.setTitulo(rs.getString("titulo"));
                 art.setFecha(rs.getDate("fecha"));
                 art.setCuerpo(rs.getString("cuerpo"));
-
+                art.setImagen(rs.getString("imagen"));
                 lista.add(art);
             }
 
@@ -168,7 +168,7 @@ public class Services {
         Connection con = null;
         try {
 
-            String query = "insert into articulo(idarticulo, titulo, cuerpo, autor, fecha) values(?,?,?,?,?)";
+            String query = "insert into articulo(idarticulo, titulo, cuerpo, autor, fecha, imagen) values(?,?,?,?,?,?)";
             con = getConexion();
             //
             PreparedStatement prepareStatement = con.prepareStatement(query);
@@ -178,7 +178,7 @@ public class Services {
             prepareStatement.setString(3, articulo.getCuerpo());
             prepareStatement.setString(4, articulo.getAutor());
             prepareStatement.setDate(5, articulo.getFecha());
-
+            prepareStatement.setString(6, articulo.getImagen());
             prepareStatement.executeUpdate();
             estado = true;
 
@@ -287,7 +287,40 @@ public class Services {
         return estado;
     }
     
-    
+    public List<Etiqueta> getEtiqueta(int id) {
+
+        List<Etiqueta> lista = new ArrayList<>();
+        Connection con = null;
+        try {
+
+            String query = "select * from etiqueta where idarticulo= ? order by idetiqueta asc";
+            con = getConexion();
+            //
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+            prepareStatement.setInt(1, id);
+            ResultSet rs = prepareStatement.executeQuery();
+            while (rs.next()) {
+                Etiqueta etiqueta = new Etiqueta();
+                etiqueta.setEtiqueta(rs.getString("etiqueta"));
+                etiqueta.setIdetiqueta(rs.getInt("idetiqueta"));
+                etiqueta.setIdarticulo(rs.getInt("idarticulo"));
+
+                lista.add(etiqueta);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return lista;
+
+    }
     
   public Articulo getEntrada(int id) {
 
@@ -307,6 +340,7 @@ public class Services {
             articulo.setFecha(rs.getDate("fecha"));
             articulo.setId(rs.getInt("idarticulo"));
             articulo.setTitulo(rs.getString("titulo"));
+            articulo.setImagen(rs.getString("imagen"));
 
         } catch (SQLException ex) {
             Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
@@ -365,7 +399,7 @@ public class Services {
             prepareStatement.setInt(1, comentario.getIdcomentario());
             prepareStatement.setString(2, comentario.getComentario());
             prepareStatement.setString(3, comentario.getAutor());
-            prepareStatement.setInt(1, comentario.getIdarticulo());
+            prepareStatement.setInt(4, comentario.getIdarticulo());
 
             prepareStatement.executeUpdate();
             estado = true;
@@ -382,5 +416,41 @@ public class Services {
         }
 
         return estado;
+    }
+   
+   public List<Comentario> getComentarios(int id) {
+
+        List<Comentario> lista = new ArrayList<>();
+        Connection con = null;
+        try {
+
+            String query = "select * from comentario where idarticulo= ? order by idcomentario desc";
+            con = getConexion();
+            //
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+            prepareStatement.setInt(1, id);
+            ResultSet rs = prepareStatement.executeQuery();
+            while (rs.next()) {
+                Comentario comentario = new Comentario();
+                comentario.setAutor(rs.getString("autor"));
+                comentario.setIdcomentario(rs.getInt("idcomentario"));
+                comentario.setComentario(rs.getString("comentario"));
+                comentario.setIdarticulo(rs.getInt("idarticulo"));
+
+                lista.add(comentario);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return lista;
+
     }
 }
