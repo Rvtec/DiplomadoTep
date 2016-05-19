@@ -60,3 +60,20 @@ footer {
     background-color: #008ae6;
     
 }
+
+.eliminar{
+    
+    float:right
+}
+
+.modificar{
+    
+    float:right;
+    margin-right: 5px;
+   
+}
+
+.cut{
+    color:black;
+    
+}

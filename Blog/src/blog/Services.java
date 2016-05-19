@@ -197,6 +197,46 @@ public class Services {
 
     }
 
+    public boolean borrarArticulo(int id) {
+
+        boolean ok = false;
+
+        Connection con = null;
+        try {
+
+            String query = "delete from articulo where idarticulo = ?";
+            String query2 = "delete from etiqueta where idarticulo = ?";
+            con = getConexion();
+            //
+            PreparedStatement prepareStatement = con.prepareStatement(query);
+            PreparedStatement prepareStatement2 = con.prepareStatement(query2);
+
+            //Indica el where...
+            prepareStatement.setInt(1, id);
+            prepareStatement2.setInt(1, id);
+            //
+            int fila = prepareStatement.executeUpdate();
+            int fila2 = prepareStatement2.executeUpdate();
+            
+            if(fila>0 && fila2>0){
+            ok = fila > 0;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+            }
+           
+        }
+         return ok;
+    }
+
+    
+
     public int maxArticulo() {
 
         int maxID = 0;
@@ -286,23 +326,22 @@ public class Services {
 
         return estado;
     }
-    
-    public List<Etiqueta> getEtiqueta(int id) {
+
+    public List<Etiqueta> getEtiqueta() {
 
         List<Etiqueta> lista = new ArrayList<>();
         Connection con = null;
         try {
 
-            String query = "select * from etiqueta where idarticulo= ? order by idetiqueta asc";
+            String query = "select * from etiqueta order by idetiqueta asc";
             con = getConexion();
             //
             PreparedStatement prepareStatement = con.prepareStatement(query);
-            prepareStatement.setInt(1, id);
+
             ResultSet rs = prepareStatement.executeQuery();
             while (rs.next()) {
                 Etiqueta etiqueta = new Etiqueta();
                 etiqueta.setEtiqueta(rs.getString("etiqueta"));
-                etiqueta.setIdetiqueta(rs.getInt("idetiqueta"));
                 etiqueta.setIdarticulo(rs.getInt("idarticulo"));
 
                 lista.add(etiqueta);
@@ -321,10 +360,10 @@ public class Services {
         return lista;
 
     }
-    
-  public Articulo getEntrada(int id) {
 
-        Articulo articulo= new Articulo();
+    public Articulo getEntrada(int id) {
+
+        Articulo articulo = new Articulo();
         Connection con = null;
         try {
 
@@ -333,7 +372,7 @@ public class Services {
             PreparedStatement prepareStatement = con.prepareStatement(query);
             prepareStatement.setInt(1, id);
             ResultSet rs = prepareStatement.executeQuery();
-            
+
             rs.next();
             articulo.setAutor(rs.getString("autor"));
             articulo.setCuerpo(rs.getString("cuerpo"));
@@ -354,8 +393,8 @@ public class Services {
         }
         return articulo;
     }
-  
-   public int maxComentario() {
+
+    public int maxComentario() {
 
         int maxID = 0;
         Connection con = null;
@@ -382,8 +421,8 @@ public class Services {
         }
         return maxID;
     }
-   
-   public boolean crearComentario(Comentario comentario) {
+
+    public boolean crearComentario(Comentario comentario) {
 
         boolean estado = false;
 
@@ -417,8 +456,8 @@ public class Services {
 
         return estado;
     }
-   
-   public List<Comentario> getComentarios(int id) {
+
+    public List<Comentario> getComentarios(int id) {
 
         List<Comentario> lista = new ArrayList<>();
         Connection con = null;

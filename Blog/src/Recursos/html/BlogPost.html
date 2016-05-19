@@ -142,8 +142,11 @@
                     <!-- Blog Post -->
 
                     <!-- Title -->
-                    <h1>${titulo}</h1>
-
+                    <h1 style="display: inline-block">${titulo}</h1>
+                    <#if rolautor?? || roladmin??>
+                    <a  class="eliminar" href="/BorrarArt?id=${id}" style=" font-size: 20px; color: red" >  <span class="glyphicon glyphicon-remove">  </span></a>
+                    <a  class="modificar" href="/ModEntrada?id=${id}" style=" font-size: 20px; color: blue" >  <span class="glyphicon glyphicon-list-alt">  </span></a>
+                    </#if>
                     <!-- Author -->
                     <p class="lead">
                         by <a href="#">${autor}</a>
@@ -163,8 +166,19 @@
                     <hr>
 
                     <!-- Post Content -->
-                    <p class="lead">${cuerpo}</p>
+                    <p style="font-size: 15px;" class="lead">${cuerpo}</p>
+                    <ul class="list-inline">
+                        <hr>
+                        <p>Etiquetas:</p>
+                        <#list etiquetas as tag>
 
+                        <#if tag.idarticulo == id>
+                        <li class="btn btn-default">${tag.etiqueta}</li>
+                        </#if>
+
+
+                        </#list>
+                    </ul>
                     <hr>
 
                     <!-- Blog Comments -->

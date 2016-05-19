@@ -148,25 +148,45 @@
                     <#if articulo??>
                     <#list articulo as art>
                     <h2>
-                        <a href="#">${art.titulo}</a>
+                        <a style="display: inline-block" href="#">${art.titulo}</a>
+                        <#if rolautor?? || roladmin??>
+                        <a  class="eliminar" href="/BorrarArt?id=${art.id}" style=" font-size: 20px; color: red" >  <span class="glyphicon glyphicon-remove">  </span></a>
+                        <a  class="modificar" href="/ModEntrada?id=${art.id}" style=" font-size: 20px; color: blue" >  <span class="glyphicon glyphicon-list-alt">  </span></a>
+                        </#if>
+
                     </h2>
                     <p class="lead">
-                        by <a href="index.php">${art.autor}</a><input name="id" value="${art.id}"style="visibility: hidden" ></input>
+                        by <a href="index.php">${art.autor}</a><input name="id" value="${art.id}"style="visibility: hidden" >
                     </p>
                     <p><span class="glyphicon glyphicon-time"></span>${art.fecha}</p>
                     <hr>
                     <#if art.imagen??>
-                    <img class="img-responsive" src=${art.imagen} alt="">
+                    <img class="img-responsive" src=${art.imagen} alt=""/>
                     </#if>
                     <hr>
-                    <p>${art.cuerpo}</p>
-                    <#list etiquetas as tag>
-                    <ul>
-                        <li>${tag.etiqueta}</li>
-                    </ul>
-                    <#else><h4>Joder</h4>
-                    </#list>
                     
+                    <#list substring as sub>
+                    <#if sub.id == art.id>
+                    <p>${sub.cuerpo}</p>
+                    </#if>
+                    </#list>
+
+                    <ul class="list-inline">
+                        <hr>
+                        <p>Etiquetas:</p>
+
+                        <#list etiquetas as tag>
+
+                        <#if tag.idarticulo == art.id>
+                        <li class="btn btn-default">${tag.etiqueta}</li>
+                        </#if>
+
+
+                        </#list>
+                    </ul>
+
+
+
                     <a class="btn btn-primary" href="/BlogPost?id=${art.id}">Leer Más <span class="glyphicon glyphicon-chevron-right"></span></a>
 
                     <hr>
@@ -185,7 +205,7 @@
 
                 </div>
 
-                
+            </div>
 
             <hr>
 
