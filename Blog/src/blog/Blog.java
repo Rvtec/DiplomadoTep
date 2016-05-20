@@ -117,7 +117,14 @@ public class Blog {
             for (Articulo art : articulo.getArticulos()) {
                 
                 Articulo artSub = new Articulo();
-                artSub.setCuerpo(art.getCuerpo().substring(0, 500) + "  ........");
+                if(art.getCuerpo().length()>500){
+                int sub= (int)Math.round(art.getCuerpo().length() - (art.getCuerpo().length() *0.7));
+                artSub.setCuerpo(art.getCuerpo().substring(0, sub) + "  ........");
+                }
+                else{
+                artSub.setCuerpo(art.getCuerpo().substring(0, 200) + "  ........");
+                }
+                
                 artSub.setId(art.getId());
                 listBody.add(artSub);
                 
@@ -142,13 +149,19 @@ public class Blog {
             Services articulo = new Services();
             Services etiquetas = new Services();
             
+            
+            
+            
+            
 
             //Recorriendo lista de articulos y haciendo substring al cuerpo
             //para enviarlo a la pagina principal
             for (Articulo art : articulo.getArticulos()) {
                 
                 Articulo artSub = new Articulo();
-                artSub.setCuerpo(art.getCuerpo().substring(0, 500) + "  ........");
+                int sub= (int)Math.round(art.getCuerpo().length() - (art.getCuerpo().length() *0.3));
+                
+                artSub.setCuerpo(art.getCuerpo().substring(0, sub) + "  ........");
                 artSub.setId(art.getId());
                 listBody.add(artSub);
                 
@@ -425,6 +438,20 @@ public class Blog {
 
             response.redirect("/Blog");
             return new ModelAndView(atributos, "");
+        }, freeMarkerEngine);
+        
+        get("/ModEntrada", (request, response) -> {
+            Map<String, Object> atributos = new HashMap<>();
+            int id = Integer.parseInt(request.queryParams("id"));
+            Services servicio = new Services();
+
+            atributos.put("mod", servicio.getEntrada(id));
+            atributos.put("modtags", servicio.getEtiqueta());
+            atributos.put("id", id);
+            
+
+            
+            return new ModelAndView(atributos, "BlogEntrada.html");
         }, freeMarkerEngine);
 
     }

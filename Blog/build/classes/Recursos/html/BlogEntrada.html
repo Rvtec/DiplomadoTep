@@ -139,29 +139,47 @@
 		                    			<span class="label-text">Titulo</span> 
 		                    			<span class="contact-error"></span>
 		                    		</label>
+                                            <#if mod??>
+                                            <input required type="text" name="titulo" placeholder="Digite Titulo" class="c-form-name form-control" id="c-form-name" value="${mod.titulo}">
+                                            <#else>
                                             <input required type="text" name="titulo" placeholder="Digite Titulo" class="c-form-name form-control" id="c-form-name">
+                                            </#if>
 		                        </div>
 		                    	<div class="form-group">
 		                    		<label for="c-form-email">
 		                    			<span class="label-text">Cuerpo</span> 
 		                    			<span class="contact-error"></span>
 		                    		</label>
+                                            <#if mod??>
+                                            <textarea required name="cuerpo" placeholder="Digite Cuerpo" class="c-form-message form-control" id="c-form-message">${mod.cuerpo}</textarea>
+                                            <#else>
                                             <textarea required name="cuerpo" placeholder="Digite Cuerpo" class="c-form-message form-control" id="c-form-message"></textarea>
+                                            </#if>
 		                        </div>
                                 <div class="form-group">
 		                        	<label for="c-form-subject">
 		                    			<span class="label-text">Link Imagen</span> 
 		                    			<span class="contact-error"></span>
 		                    		</label>
+                                    <#if mod??>
+                                    <input required type="text" name="imagen" placeholder="Introduzca link de imagen" class="c-form-subject form-control" id="c-form-subject" value="${mod.imagen}">
+                                    <#else>
                                     <input required type="text" name="imagen" placeholder="Introduzca link de imagen" class="c-form-subject form-control" id="c-form-subject">
-		                        </div>
+		                </#if>        
+                                </div>
 		                        <div class="form-group">
 		                        	<label for="c-form-subject">
 		                    			<span class="label-text">Etiquetas</span> 
 		                    			<span class="contact-error"></span>
 		                    		</label>
+                                            <#list modtags as eti>
+                                            <#if eti.idarticulo == id>
+                                            <input  type="text" name="etiquetas" placeholder="Digite Etiquetas" class="c-form-subject form-control" id="c-form-subject" value="${eti.etiqueta}">
+                                            </#if>
+                                            <#else>
                                             <input  type="text" name="etiquetas" placeholder="Digite Etiquetas" class="c-form-subject form-control" id="c-form-subject">
-		                        </div>
+		                        </#list>
+                                        </div>
                                 <div>
                                 <#if id??>
                                 <input value="${id}" name="id">

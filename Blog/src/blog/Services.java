@@ -196,6 +196,44 @@ public class Services {
         return estado;
 
     }
+    
+//    public boolean modificarArticulo(int id) {
+//
+//        boolean ok = false;
+//
+//        Connection con = null;
+//        try {
+//
+//            String query = "update Articulo set titulo=?, cuerpo=?, imagen=?, autor=? where idarticulo = ?";
+//            
+//            con = getConexion();
+//            //
+//            PreparedStatement prepareStatement = con.prepareStatement(query);
+//            
+//
+//            //Indica el where...
+//            prepareStatement.setInt(1, id);
+//            
+//            //
+//            int fila = prepareStatement.executeUpdate();
+//            int fila2 = prepareStatement2.executeUpdate();
+//            
+//            if(fila>0 && fila2>0){
+//            ok = fila > 0;
+//            }
+//            
+//        } catch (SQLException ex) {
+//            Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            try {
+//                con.close();
+//            } catch (SQLException ex) {
+//                Logger.getLogger(Services.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//           
+//        }
+//         return ok;
+//    }
 
     public boolean borrarArticulo(int id) {
 
