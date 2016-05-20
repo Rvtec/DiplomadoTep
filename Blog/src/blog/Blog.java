@@ -51,8 +51,17 @@ public class Blog {
         //Pantalla de Login
         get("/Login", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
-
+            String url = null;
             List<Articulo> lista = new ArrayList<>();
+            Services servicio = new Services();
+
+//            if (request.url().equalsIgnoreCase("/Login")) {
+//                url = "/Blog";
+//            } else {
+//                url = request.url();
+//            }
+//
+//            atributos.put("url", url);
 
             Connection con = null;
 
@@ -65,7 +74,11 @@ public class Blog {
                 ResultSet rs = prepareStatement.executeQuery();
 
                 if (!rs.next()) {
-                    response.redirect("/Registro");
+                    Usuario usuario= new Usuario("admin","admin","123456",true,false);
+                    servicio.crearUsuario(usuario);
+                    request.session().attribute("sesion", usuario);
+                    request.session(true);
+                    response.redirect("/Blog");
                 }
 
             } catch (SQLException ex) {
@@ -111,28 +124,25 @@ public class Blog {
             } else {
                 atributos.put("login", "Login");
             }
-            
+
             //Recorriendo lista de articulos y haciendo substring al cuerpo
             //para enviarlo a la pagina principal
             for (Articulo art : articulo.getArticulos()) {
-                
+
                 Articulo artSub = new Articulo();
-                if(art.getCuerpo().length()>500){
-                int sub= (int)Math.round(art.getCuerpo().length() - (art.getCuerpo().length() *0.7));
-                artSub.setCuerpo(art.getCuerpo().substring(0, sub) + "  ........");
+                if (art.getCuerpo().length() > 500) {
+                    int sub = (int) Math.round(art.getCuerpo().length() - (art.getCuerpo().length() * 0.7));
+                    artSub.setCuerpo(art.getCuerpo().substring(0, sub) + "  ........");
+                } else {
+                    artSub.setCuerpo(art.getCuerpo().substring(0, 200) + "  ........");
                 }
-                else{
-                artSub.setCuerpo(art.getCuerpo().substring(0, 200) + "  ........");
-                }
-                
                 artSub.setId(art.getId());
+              
                 listBody.add(artSub);
-                
+
             }
             
-            
-
-            
+         //Enviando lista de cuerpos con substring
             atributos.put("substring", listBody);
 
             return new ModelAndView(atributos, "BlogHome.html");
@@ -144,28 +154,30 @@ public class Blog {
             String usuario = request.queryParams("Usuario");
             String contraseña = request.queryParams("password");
             String mensaje = "";
+            String url = request.queryParams("url");
             List<Articulo> listBody = new ArrayList<>();
             Services user = new Services();
             Services articulo = new Services();
             Services etiquetas = new Services();
             
             
-            
-            
-            
-
             //Recorriendo lista de articulos y haciendo substring al cuerpo
             //para enviarlo a la pagina principal
             for (Articulo art : articulo.getArticulos()) {
-                
+
                 Articulo artSub = new Articulo();
-                int sub= (int)Math.round(art.getCuerpo().length() - (art.getCuerpo().length() *0.3));
-                
-                artSub.setCuerpo(art.getCuerpo().substring(0, sub) + "  ........");
+                if (art.getCuerpo().length() > 500) {
+                    int sub = (int) Math.round(art.getCuerpo().length() - (art.getCuerpo().length() * 0.7));
+                    artSub.setCuerpo(art.getCuerpo().substring(0, sub) + "  ........");
+                } else {
+                    artSub.setCuerpo(art.getCuerpo().substring(0, 200) + "  ........");
+                }
                 artSub.setId(art.getId());
+                //Enviando lista de cuerpos con substring
                 listBody.add(artSub);
-                
+
             }
+            
             //Enviarndo lista de cuerpos con substring
             atributos.put("substring", listBody);
 
@@ -193,18 +205,9 @@ public class Blog {
 
             }
 
-            //Verificando permisos del usuario 
-            if (user.getUsuario(usuario).isAdmin()) {
-                String roladmin = "Crear Usuario";
-                atributos.put("roladmin", roladmin);
-            }
+        
 
-            if (user.getUsuario(usuario).isAutor()) {
-                String rolautor = "Crear Articulo";
-                atributos.put("rolautor", rolautor);
-            }
-
-            //Mandando datos de la sesion
+            //Mandando datos de la sesion y permisos de usuario
             Usuario usu = request.session().attribute("sesion");
 
             if (usu != null) {
@@ -224,6 +227,12 @@ public class Blog {
                 atributos.put("login", "Login");
             }
 
+            //Redireccionando a la url de la peticion
+//            if(!url.equalsIgnoreCase("/Blog")){
+//                System.out.println(url);
+//            response.redirect(url);
+//                
+//            }
             return new ModelAndView(atributos, "BlogHome.html");
         }, freeMarkerEngine);
 
@@ -242,12 +251,12 @@ public class Blog {
 
             atributos.put("autor", articulo.getEntrada(id).getAutor());
             atributos.put("titulo", articulo.getEntrada(id).getTitulo());
-            atributos.put("cuerpo", articulo.getEntrada(id).getCuerpo());
+            atributos.put("cuerpo", articulo.getEntrada(id).getCuerpo().replace("\n", "<br>"));
             atributos.put("id", articulo.getEntrada(id).getId());
             atributos.put("fecha", articulo.getEntrada(id).getFecha());
             atributos.put("imagen", articulo.getEntrada(id).getImagen());
 
-            //Mandando datos de la sesion
+            //Mandando datos de la sesion y permisos de usuario
             Usuario usu = request.session().attribute("sesion");
 
             if (usu != null) {
@@ -339,6 +348,19 @@ public class Blog {
             atributos.put("mensaje", mensaje);
             return new ModelAndView(atributos, "Registro.html");
         }, freeMarkerEngine);
+        
+        get("/RegistroADM", (request, response) -> {
+            Map<String, Object> atributos = new HashMap<>();
+            Usuario usu = request.session().attribute("sesion");
+            if(usu.isAdmin()== true){
+                return new ModelAndView(atributos, "RegistroADM.html");
+            
+            }else{
+                response.redirect("registro");
+            }
+            
+            return new ModelAndView(atributos, "");
+        }, freeMarkerEngine);
 
         //Tomando datos del registro
         post("/Registro", (request, response) -> {
@@ -384,7 +406,9 @@ public class Blog {
             Services id = new Services();
             int idart;
             Usuario sesion = request.session().attribute("sesion");
-
+            Usuario user = new Usuario();
+                    
+                    
             if (sesion == null) {
                 response.redirect("/Login");
             }
@@ -394,6 +418,28 @@ public class Blog {
             idart = id.maxArticulo() + 1;
 
             atributos.put("id", idart);
+            
+            
+
+            //Mandando datos de la sesion y permisos de usuario
+            Usuario usu = request.session().attribute("sesion");
+
+            if (usu != null) {
+
+                atributos.put("usuario", usu.getUsuario());
+
+                if (usu.isAdmin()) {
+                    String roladmin = "Crear Usuario";
+                    atributos.put("roladmin", roladmin);
+                }
+
+                if (usu.isAutor()) {
+                    String rolautor = "Crear Articulo";
+                    atributos.put("rolautor", rolautor);
+                }
+            } else {
+                atributos.put("login", "Login");
+            }
 
             return new ModelAndView(atributos, "BlogEntrada.html");
         }, freeMarkerEngine);
@@ -439,7 +485,7 @@ public class Blog {
             response.redirect("/Blog");
             return new ModelAndView(atributos, "");
         }, freeMarkerEngine);
-        
+
         get("/ModEntrada", (request, response) -> {
             Map<String, Object> atributos = new HashMap<>();
             int id = Integer.parseInt(request.queryParams("id"));
@@ -448,9 +494,47 @@ public class Blog {
             atributos.put("mod", servicio.getEntrada(id));
             atributos.put("modtags", servicio.getEtiqueta());
             atributos.put("id", id);
-            
 
-            
+            return new ModelAndView(atributos, "BlogEntrada.html");
+        }, freeMarkerEngine);
+
+        post("/ModEntrada", (request, response) -> {
+            Map<String, Object> atributos = new HashMap<>();
+            int id = Integer.parseInt(request.queryParams("id"));
+            String titulo = request.queryParams("titulo");
+            String cuerpo = request.queryParams("cuerpo");
+            String imagen = request.queryParams("imagen");
+            String etiquetas = request.queryParams("etiquetas");
+            Services servicio = new Services();
+            Articulo articulo = new Articulo(id, titulo, cuerpo, imagen);
+            Etiqueta etiqueta = new Etiqueta();
+
+            //Instancia de Services utilizada para buscar max etiqueta
+            Services idMax = new Services();
+
+            // Modificando articulo y verificando si se hizo correctamente
+            // Para luego procesar las etiquetas
+            if (servicio.modificarArticulo(articulo) == true) {
+
+                //Borrando etiquetas relacionadas con el articulo
+                servicio.borrarEtiqueta(id);
+
+                //Creando Etiquetas
+                if (etiquetas != null) {
+                    //For utilizado para separar las etiquetas y mandarlas a la BD
+                    for (String tags : etiquetas.split(",")) {
+
+                        etiqueta.setEtiqueta(tags);
+                        etiqueta.setIdarticulo(id);
+                        etiqueta.setIdetiqueta(idMax.maxEtiqueta() + 1);
+                        servicio.crearEtiqueta(etiqueta);
+
+                    }
+                }
+            }
+
+            response.redirect("/BlogPost?id=" + id);
+
             return new ModelAndView(atributos, "BlogEntrada.html");
         }, freeMarkerEngine);
 

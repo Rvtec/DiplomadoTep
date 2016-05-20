@@ -8,14 +8,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        
+
         <!-- Bootstrap Core CSS -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
 
     </head>
     <body>
-<!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+       <!-- Navigation -->
+        <nav  class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
@@ -33,22 +33,28 @@
                         <li>
                             <a href="/Blog">Inicio</a>
                         </li>
+
+                        <#if roladmin??>
+                        <li>
+                            <a href="/RegistroADM">${roladmin}</a>
+                            
+                        </li>
+                        <li>
+                            <a href="/Entrada">Crear Articulo</a>
+                        </li>
+                        </#if>
+                        <#if rolautor??>
+                        <li>
+                            <a href="/Entrada">${rolautor}</a>
+                        </li>
+                        </#if>
                         <li>
                             <a href="#">Acerca</a>
                         </li>
                         <li>
                             <a href="#">Contacto</a>
                         </li>
-                        <#if roladmin??>
                         <li>
-                            <a href="/Registro">${roladmin}</a>
-                        </li>
-                        </#if>
-                        <#if rolautor??>
-                        <li>
-                            <a href="/Registro">${rolautor}</a>
-                        </li>
-                        </#if><li>
                             <a></a>
                         </li>
                         <li>
@@ -113,73 +119,154 @@
             <!-- /.container -->
         </nav>
 
-<!-- Contact Form -->
-		<div class="c-form-container section-container section-container-image-bg" >
-	        <div class="container" >
-	        	
-	           
-	            
-	            <div class="row">
-	            	<div class="col-sm-6 col-sm-offset-3 c-form-box wow fadeInUp">
-	            		
-	                    <div class="c-form-top" >
-                    		
-                    		<div class="c-form-top-right">
-                    			<div class="c-form-top-right-icon">
-                    				<i class="fa fa-paper-plane"></i>
-                    			</div>
-                    		</div>
-                        </div>
-                            <div class="panel panel-default" style="margin-top: 150px;">
-                                <div class="panel-body">
-                        <div class="c-form-bottom">
-                            <form style="margin-top: 20px;" role="form" action="/BlogPost" method="post">
-		                    	<div class="form-group">
-		                    		<label for="c-form-name">
-		                    			<span class="label-text">Titulo</span> 
-		                    			<span class="contact-error"></span>
-		                    		</label>
-                                            <input required type="text" name="titulo" placeholder="Digite Titulo" class="c-form-name form-control" id="c-form-name">
-		                        </div>
-		                    	<div class="form-group">
-		                    		<label for="c-form-email">
-		                    			<span class="label-text">Cuerpo</span> 
-		                    			<span class="contact-error"></span>
-		                    		</label>
-                                            <textarea required name="cuerpo" placeholder="Digite Cuerpo" class="c-form-message form-control" id="c-form-message"></textarea>
-		                        </div>
-                                <div class="form-group">
-		                        	<label for="c-form-subject">
-		                    			<span class="label-text">Link Imagen</span> 
-		                    			<span class="contact-error"></span>
-		                    		</label>
-                                    <input required type="text" name="imagen" placeholder="Introduzca link de imagen" class="c-form-subject form-control" id="c-form-subject">
-		                        </div>
-		                        <div class="form-group">
-		                        	<label for="c-form-subject">
-		                    			<span class="label-text">Etiquetas</span> 
-		                    			<span class="contact-error"></span>
-		                    		</label>
-                                            <input  type="text" name="etiquetas" placeholder="Digite Etiquetas" class="c-form-subject form-control" id="c-form-subject">
-		                        </div>
-                                <div>
-                                <#if id??>
-                                <input value="${id}" name="id">
-                                </#if>
+        <!-- Contact Form -->
+        <div class="c-form-container section-container section-container-image-bg" >
+            <div class="container" >
+
+
+
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3 c-form-box wow fadeInUp">
+
+                        <div class="c-form-top" >
+
+                            <div class="c-form-top-right">
+                                <div class="c-form-top-right-icon">
+                                    <i class="fa fa-paper-plane"></i>
                                 </div>
-		                        <button type="submit" class="btn btn-primary">Publicar</button>
+                            </div>
+                        </div>
+                        <#if modtags??>
+                        <div class="panel panel-default" style="margin-top: 150px;">
+                            <div class="panel-body">
+                                <div class="c-form-bottom">
+                                    <form style="margin-top: 20px;" role="form" action="/ModEntrada" method="post">
+                                        <div class="form-group">
+                                            <label for="c-form-name">
+
+                                                <span class="label-text">Titulo</span> 
+                                                <span class="contact-error"></span>
+                                            </label>
+                                            <#if mod.titulo??>
+                                            <input required type="text" name="titulo" placeholder="Digite Titulo" class="c-form-name form-control" id="c-form-name" value="${mod.titulo}">
+                                            <#else>
+                                            <input required type="text" name="titulo" placeholder="Digite Titulo" class="c-form-name form-control" id="c-form-name">
+                                            </#if>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="c-form-email">
+                                                <span class="label-text">Cuerpo</span> 
+                                                <span class="contact-error"></span>
+                                            </label>
+                                            <#if mod.cuerpo??>
+                                            <textarea required name="cuerpo" placeholder="Digite Cuerpo" class="c-form-message form-control" id="c-form-message">${mod.cuerpo}</textarea>
+                                            <#else>
+                                            <textarea required name="cuerpo" placeholder="Digite Cuerpo" class="c-form-message form-control" id="c-form-message"></textarea>
+                                            </#if>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="c-form-subject">
+                                                <span class="label-text">Link Imagen</span> 
+                                                <span class="contact-error"></span>
+                                            </label>
+                                            <#if mod.imagen??>
+                                            <input required value="${mod.imagen}" type="text" name="imagen" placeholder="Introduzca link de imagen" class="c-form-subject form-control" id="c-form-subject">
+                                            <#else>
+                                            <input required type="text" name="imagen" placeholder="Introduzca link de imagen" class="c-form-subject form-control" id="c-form-subject">
+                                            </#if>   
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="c-form-subject">
+                                                <span class="label-text">Etiquetas</span> 
+                                                <span class="contact-error"></span>
+                                            </label>
+                                            
+                                            
+                                            <textarea  name="etiquetas" placeholder="Digite Etiquetas" class="c-form-subject form-control" id="c-form-subject"><#list modtags as eti><#if eti.idarticulo == id>${eti.etiqueta}<#sep>, </#if></#list></textarea>
+                                            
+                                            
+                                        </div>
+                                        <div>
+                                            <#if id??>
+                                            <input value="${id}" name="id" style="visibility: hidden">
+                                            </#if>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary">Modificar</button>
                                         <a href="/Blog"><buttom class="btn btn-primary">Salir</buttom></a>
-		                    </form>
-	                    </div>
-                                    </div>
-	                    </div>
-	                </div>
-	            </div>
-	            
-	        
-	            </div>
-	             
-	        
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <#else>
+                        <div class="panel panel-default" style="margin-top: 150px;">
+                            <div class="panel-body">
+                                <div class="c-form-bottom">
+                                    <form style="margin-top: 20px;" role="form" action="/BlogPost" method="post">
+                                        <div class="form-group">
+                                            <label for="c-form-name">
+
+                                                <span class="label-text">Titulo</span> 
+                                                <span class="contact-error"></span>
+                                            </label>
+                                            
+                                            <input required type="text" name="titulo" placeholder="Digite Titulo" class="c-form-name form-control" id="c-form-name">
+                                           
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="c-form-email">
+                                                <span class="label-text">Cuerpo</span> 
+                                                <span class="contact-error"></span>
+                                            </label>
+                                            
+                                            
+                                            <textarea required name="cuerpo" placeholder="Digite Cuerpo" class="c-form-message form-control" id="c-form-message"></textarea>
+                                            
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="c-form-subject">
+                                                <span class="label-text">Link Imagen</span> 
+                                                <span class="contact-error"></span>
+                                            </label>
+                                            
+                                            
+                                            <input required type="text" name="imagen" placeholder="Introduzca link de imagen" class="c-form-subject form-control" id="c-form-subject">
+                                           
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="c-form-subject">
+                                                <span class="label-text">Etiquetas</span> 
+                                                <span class="contact-error"></span>
+                                            </label>
+                                            
+                                          
+                                            <input  type="text" name="etiquetas" placeholder="Digite Etiquetas" class="c-form-subject form-control" id="c-form-subject">
+                                           
+                                            
+                                        </div>
+                                        <div>
+                                            <#if id??>
+                                            <input value="${id}" name="id" style="visibility: hidden">
+                                            </#if>
+                                        </div>
+                                        
+                                        
+                                        <button type="submit" class="btn btn-primary">Publicar</button>
+                                        <a href="/Blog"><buttom class="btn btn-primary">Salir</buttom></a>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        </#if>
+                    </div>
+                </div>
+
+
+            </div>
+
+
         </div>
     </body>
 

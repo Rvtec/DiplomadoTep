@@ -21,6 +21,15 @@ public class Articulo {
     private String imagen;
 
     
+    
+    Articulo(int idarticulo, String titulo,String cuerpo, String imagen){
+        setId(idarticulo);
+        setTitulo(titulo);
+        setCuerpo(cuerpo);
+        setImagen(imagen);
+    }
+    
+    
     Articulo(){
     
     }

@@ -52,7 +52,11 @@
 
                         <#if roladmin??>
                         <li>
-                            <a href="/Registro">${roladmin}</a>
+                            <a href="/RegistroADM">${roladmin}</a>
+                            
+                        </li>
+                        <li>
+                            <a href="/Entrada">Crear Articulo</a>
                         </li>
                         </#if>
                         <#if rolautor??>
@@ -148,7 +152,7 @@
                     <#if articulo??>
                     <#list articulo as art>
                     <h2>
-                        <a style="display: inline-block" href="#">${art.titulo}</a>
+                        <a style="display: inline-block" href="/BlogPost?id=${art.id}">${art.titulo}</a>
                         <#if rolautor?? || roladmin??>
                         <a  class="eliminar" href="/BorrarArt?id=${art.id}" style=" font-size: 20px; color: red" >  <span class="glyphicon glyphicon-remove">  </span></a>
                         <a  class="modificar" href="/ModEntrada?id=${art.id}" style=" font-size: 20px; color: blue" >  <span class="glyphicon glyphicon-list-alt">  </span></a>
@@ -170,7 +174,7 @@
                     <p>${sub.cuerpo}</p>
                     </#if>
                     </#list>
-
+<a class="btn btn-primary" href="/BlogPost?id=${art.id}">Leer Más <span class="glyphicon glyphicon-chevron-right"></span></a>
                     <ul class="list-inline">
                         <hr>
                         <p>Etiquetas:</p>
@@ -187,7 +191,7 @@
 
 
 
-                    <a class="btn btn-primary" href="/BlogPost?id=${art.id}">Leer Más <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    
 
                     <hr>
                     </#list>
